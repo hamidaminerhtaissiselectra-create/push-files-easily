@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import ServiceRegionsSection from "@/components/ServiceRegionsSection";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useSEO } from "@/hooks/useSEO";
