@@ -2,8 +2,9 @@ import { Phone, Mail, MapPin, ArrowRight, Facebook, Instagram } from "lucide-rea
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
+import { content } from "@/data/content";
 
-
+const phoneClean = content.company.contact.phoneMobile.replace(/\s/g, '');
 const Footer = () => (
   <footer className="bg-primary text-primary-foreground" itemScope itemType="https://schema.org/LocalBusiness">
     {/* CTA Banner */}
@@ -17,8 +18,8 @@ const Footer = () => (
           <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90 gap-2">
             <a href="/#devis">Demander un devis <ArrowRight className="h-4 w-4" /></a>
           </Button>
-          <Button asChild className="border border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 gap-2">
-            <a href="tel:0603205967"><Phone className="h-4 w-4" /> Appeler</a>
+           <Button asChild className="border border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 gap-2">
+            <a href={`tel:${phoneClean}`}><Phone className="h-4 w-4" /> Appeler</a>
           </Button>
         </div>
       </div>
@@ -27,21 +28,21 @@ const Footer = () => (
     <div className="container mx-auto px-4 py-12">
       <div className="grid md:grid-cols-4 gap-10 mb-10">
         <div>
-          <div className="font-display font-bold text-2xl mb-4">Répar'Action <span className="text-accent">Volets</span></div>
+          <div className="font-display font-bold text-2xl mb-4">{content.company.name.replace('Volets', '')}<span className="text-accent">Volets</span></div>
           <p className="text-primary-foreground/70 text-sm leading-relaxed mb-3">
             Spécialiste du dépannage, de la réparation et de l'installation de volets roulants à Paris et en Île-de-France. Qualité, rapidité et garantie 3 ans pièces et main d'œuvre.
           </p>
           <p className="text-primary-foreground/50 text-xs mb-3">SIRET : 982 156 978 000 16</p>
           <div className="flex flex-wrap gap-2 mb-4">
-            {["RGE", "Qualibat", "Garantie 3 ans"].map((c) => (
+            {[...content.certifications, "Garantie 3 ans"].map((c) => (
               <Badge key={c} variant="default" className="text-[10px]">{c}</Badge>
             ))}
           </div>
           <div className="flex gap-4">
-            <a href="https://facebook.com/reparactionvolets" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+            <a href={content.company.social.facebook} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
               <Facebook className="h-5 w-5" />
             </a>
-            <a href="https://instagram.com/reparactionvolets" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+            <a href={content.company.social.instagram} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
               <Instagram className="h-5 w-5" />
             </a>
           </div>
@@ -72,9 +73,9 @@ const Footer = () => (
         <div>
           <h4 className="font-display font-semibold text-sm mb-4 uppercase tracking-wider">Contact</h4>
           <ul className="space-y-3 text-sm text-primary-foreground/70" itemProp="address" itemScope itemType="https://schema.org/PostalAddress">
-            <li className="flex items-center gap-2"><MapPin className="h-4 w-4 shrink-0" /> <span itemProp="streetAddress">62 Rue Emile Zola</span>, <span itemProp="postalCode">77610</span> <span itemProp="addressLocality">Fontenay-Trésigny</span></li>
-            <li className="flex items-center gap-2"><Phone className="h-4 w-4 shrink-0" /><a href="tel:0603205967" className="hover:text-primary-foreground transition-colors" itemProp="telephone">06 03 20 59 67</a></li>
-            <li className="flex items-center gap-2"><Mail className="h-4 w-4 shrink-0" /> <span itemProp="email">contact@reparaction-volets.fr</span></li>
+            <li className="flex items-center gap-2"><MapPin className="h-4 w-4 shrink-0" /> <span itemProp="streetAddress">{content.company.contact.address.split(',')[0]}</span>, <span itemProp="postalCode">77610</span> <span itemProp="addressLocality">Fontenay-Trésigny</span></li>
+            <li className="flex items-center gap-2"><Phone className="h-4 w-4 shrink-0" /><a href={`tel:${phoneClean}`} className="hover:text-primary-foreground transition-colors" itemProp="telephone">{content.company.contact.phoneMobile}</a></li>
+            <li className="flex items-center gap-2"><Mail className="h-4 w-4 shrink-0" /> <span itemProp="email">{content.company.contact.email}</span></li>
           </ul>
         </div>
       </div>

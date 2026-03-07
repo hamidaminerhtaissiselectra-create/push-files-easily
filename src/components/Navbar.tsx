@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Menu, X, Phone, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
-
+import { content } from "@/data/content";
 
 const serviceLinks = [
   { label: "Dépannage Express", href: "/services/depannage-express" },
@@ -53,7 +53,7 @@ const Navbar = () => {
       </a>
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
         <Link to="/" className="font-display font-bold text-xl text-primary">
-          Répar'Action <span className="text-accent">Volets</span>
+          {content.company.name.split(" ").slice(0, -1).join(" ")} <span className="text-accent">{content.company.name.split(" ").pop()}</span>
         </Link>
 
         {/* Desktop */}
@@ -87,7 +87,7 @@ const Navbar = () => {
 
         <div className="hidden lg:flex items-center gap-3">
             <Button size="sm" variant="accent-outline" asChild className="gap-2">
-            <a href="tel:0603205967"><Phone className="h-4 w-4" /> 06 03 20 59 67</a>
+            <a href={`tel:${content.company.contact.phoneMobile.replace(/\s/g, '')}`}><Phone className="h-4 w-4" /> {content.company.contact.phoneMobile}</a>
           </Button>
             <Button size="sm" variant="accent" asChild>
             <a href="/#devis">Devis Gratuit</a>
@@ -125,7 +125,7 @@ const Navbar = () => {
           ))}
           <div className="flex flex-col gap-2 pt-2">
             <Button size="sm" variant="accent-outline" asChild className="w-full gap-2">
-              <a href="tel:0603205967"><Phone className="h-4 w-4" /> 06 03 20 59 67</a>
+              <a href={`tel:${content.company.contact.phoneMobile.replace(/\s/g, '')}`}><Phone className="h-4 w-4" /> {content.company.contact.phoneMobile}</a>
             </Button>
             <Button size="sm" variant="accent" asChild className="w-full">
               <a href="/#devis" onClick={() => setOpen(false)}>Devis Gratuit</a>
