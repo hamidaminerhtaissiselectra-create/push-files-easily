@@ -58,9 +58,11 @@ const RegionCard = ({ r, i }: { r: Region; i: number }) => {
         <div className="text-[10px] text-muted-foreground font-medium mb-4">
           <span className="px-2 py-1 rounded-md bg-black/5">{r.depts.split(",").length} départements</span>
         </div>
-        <div className="mt-auto flex items-center gap-2 text-xs font-semibold text-accent transition-all duration-300 group-hover:gap-3">
-          Voir les détails <ArrowRight className="h-3 w-3" />
-        </div>
+        {r.active && (
+          <div className="mt-auto flex items-center gap-2 text-xs font-semibold text-accent transition-all duration-300 group-hover:gap-3">
+            Voir les détails <ArrowRight className="h-3 w-3" />
+          </div>
+        )}
       </div>
     </>
   );
@@ -77,7 +79,7 @@ const RegionCard = ({ r, i }: { r: Region; i: number }) => {
       {r.active ? (
         <Link to={r.link} className="flex flex-col h-full">{content}</Link>
       ) : (
-        <Link to={r.link} className="flex flex-col h-full">{content}</Link>
+        <div className="flex flex-col h-full">{content}</div>
       )}
     </motion.div>
   );
