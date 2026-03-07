@@ -83,8 +83,14 @@ const RegionCard = ({ r, i }: { r: Region; i: number }) => {
   );
 };
 
-const ServiceRegionsSection = () => {
+const ServiceRegionsSection = ({ regionsFirst = false }: { regionsFirst?: boolean }) => {
   const [showAll, setShowAll] = useState(false);
+
+  // When regionsFirst is true, show allFranceRegions first, then Paris/IDF
+  const primaryRegions = regionsFirst ? allFranceRegions : activeRegions;
+  const secondaryRegions = regionsFirst ? activeRegions : allFranceRegions;
+  const primaryGridCols = regionsFirst ? "lg:grid-cols-4" : "lg:grid-cols-5";
+  const secondaryGridCols = regionsFirst ? "lg:grid-cols-5" : "lg:grid-cols-4";
 
   return (
     <section className="py-16 bg-section-gradient relative overflow-hidden">
@@ -107,24 +113,24 @@ const ServiceRegionsSection = () => {
           </p>
         </motion.div>
 
-        {/* Active: Paris & IDF */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-          {activeRegions.map((r, i) => (
+        {/* Primary regions */}
+        <div className={`grid grid-cols-1 sm:grid-cols-2 ${primaryGridCols} gap-6 mb-8`}>
+          {primaryRegions.map((r, i) => (
             <RegionCard key={r.name} r={r} i={i} />
           ))}
         </div>
 
-        {/* Other regions - expandable */}
+        {/* Secondary regions - expandable */}
         {!showAll ? (
           <div className="text-center">
             <Button onClick={() => setShowAll(true)} variant="outline" className="rounded-full border-accent/30 text-accent hover:bg-accent/10">
-              Voir toutes les régions de France <ChevronDown className="ml-1 h-4 w-4" />
+              {regionsFirst ? "Voir Paris & Île-de-France" : "Voir toutes les régions de France"} <ChevronDown className="ml-1 h-4 w-4" />
             </Button>
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {allFranceRegions.map((r, i) => (
+            <div className={`grid grid-cols-1 sm:grid-cols-2 ${secondaryGridCols} gap-6`}>
+              {secondaryRegions.map((r, i) => (
                 <RegionCard key={r.name} r={r} i={i} />
               ))}
             </div>

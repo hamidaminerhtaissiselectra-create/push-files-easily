@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import ServiceRegionsSection from "@/components/ServiceRegionsSection";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useSEO } from "@/hooks/useSEO";
@@ -332,6 +333,9 @@ const ZonesIntervention = () => {
 
         </div>
       </section>
+
+      {/* Section Régions d'Intervention — autres régions en premier */}
+      <ServiceRegionsSection regionsFirst />
 
       {/* Section Innovation & Technologie */}
       <section className="py-20 bg-secondary/20">
