@@ -83,8 +83,14 @@ const RegionCard = ({ r, i }: { r: Region; i: number }) => {
   );
 };
 
-const ServiceRegionsSection = () => {
+const ServiceRegionsSection = ({ regionsFirst = false }: { regionsFirst?: boolean }) => {
   const [showAll, setShowAll] = useState(false);
+
+  // When regionsFirst is true, show allFranceRegions first, then Paris/IDF
+  const primaryRegions = regionsFirst ? allFranceRegions : activeRegions;
+  const secondaryRegions = regionsFirst ? activeRegions : allFranceRegions;
+  const primaryGridCols = regionsFirst ? "lg:grid-cols-4" : "lg:grid-cols-5";
+  const secondaryGridCols = regionsFirst ? "lg:grid-cols-5" : "lg:grid-cols-4";
 
   return (
     <section className="py-16 bg-section-gradient relative overflow-hidden">
