@@ -1,15 +1,14 @@
 import { Link } from "react-router-dom";
 import ServiceRegionsSection from "@/components/ServiceRegionsSection";
+import IdfCitiesSection from "@/components/IdfCitiesSection";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useSEO } from "@/hooks/useSEO";
 import Breadcrumbs from "@/components/SEO/Breadcrumbs";
 import AnimatedSection from "@/components/AnimatedSection";
 import { staggerItem } from "@/lib/animations";
-import { Card as _Card, CardContent as _CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { regionsData } from "@/data/regionsData";
 import { 
   MapPin, 
   ArrowRight, 
