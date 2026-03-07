@@ -411,44 +411,7 @@ const ZonesIntervention = () => {
       </section>
 
       {/* Section villes IDF détaillées */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }} 
-            whileInView={{ opacity: 1, y: 0 }} 
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-center max-w-2xl mx-auto mb-14"
-          >
-            <Badge variant="default" className="gap-2 px-3 py-1 rounded-full text-sm font-semibold mb-4 bg-accent/10 text-accent border border-accent/20">
-              <MapPin className="h-3.5 w-3.5" /> Villes desservies
-            </Badge>
-            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mt-2 mb-4">
-              Nos Villes d'Intervention en Île-de-France
-            </h2>
-            <p className="text-muted-foreground">
-              Découvrez nos pages dédiées pour chaque ville et arrondissement. Contenu personnalisé, témoignages locaux et services adaptés.
-            </p>
-          </motion.div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {regionsData[0].mainCities.map((city, i) => (
-              <AnimatedSection key={city} animation="fade-up" delay={i * 30}>
-                <Link 
-                  to={`/zones-intervention/reparation-volet-paris-${i + 1}`}
-                  className="block p-4 rounded-xl border border-border bg-card hover:border-accent hover:shadow-md transition-all group"
-                >
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-accent" />
-                    <span className="font-semibold text-foreground group-hover:text-accent transition-colors">{city}</span>
-                    <ArrowRight className="h-3.5 w-3.5 ml-auto text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </Link>
-              </AnimatedSection>
-            ))}
-          </div>
-        </div>
-      </section>
+      <IdfCitiesSection />
 
       {/* FAQ Section */}
       <section className="py-20 bg-secondary/20">

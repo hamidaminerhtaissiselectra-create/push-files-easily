@@ -84,13 +84,17 @@ const RegionCard = ({ r, i }: { r: Region; i: number }) => {
 };
 
 const ServiceRegionsSection = ({ regionsFirst = false }: { regionsFirst?: boolean }) => {
-  const [showAll, setShowAll] = useState(false);
+  const [showMore, setShowMore] = useState(false);
+  const [showSecondary, setShowSecondary] = useState(false);
 
   // When regionsFirst is true, show allFranceRegions first, then Paris/IDF
   const primaryRegions = regionsFirst ? allFranceRegions : activeRegions;
   const secondaryRegions = regionsFirst ? activeRegions : allFranceRegions;
-  const primaryGridCols = regionsFirst ? "lg:grid-cols-4" : "lg:grid-cols-5";
-  const secondaryGridCols = regionsFirst ? "lg:grid-cols-5" : "lg:grid-cols-4";
+  
+  // Show only 1 row initially (4 items on lg)
+  const firstRowCount = 4;
+  const primaryFirstRow = primaryRegions.slice(0, firstRowCount);
+  const primaryRest = primaryRegions.slice(firstRowCount);
 
   return (
     <section className="py-16 bg-section-gradient relative overflow-hidden">
@@ -113,29 +117,55 @@ const ServiceRegionsSection = ({ regionsFirst = false }: { regionsFirst?: boolea
           </p>
         </motion.div>
 
-        {/* Primary regions */}
-        <div className={`grid grid-cols-1 sm:grid-cols-2 ${primaryGridCols} gap-6 mb-8`}>
-          {primaryRegions.map((r, i) => (
+        {/* Primary regions - first row always visible */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          {primaryFirstRow.map((r, i) => (
             <RegionCard key={r.name} r={r} i={i} />
           ))}
         </div>
 
+        {/* Primary regions - remaining rows expandable */}
+        {primaryRest.length > 0 && (
+          <>
+            {showMore ? (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                  {primaryRest.map((r, i) => (
+                    <RegionCard key={r.name} r={r} i={i} />
+                  ))}
+                </div>
+                <div className="text-center mb-6">
+                  <Button onClick={() => setShowMore(false)} variant="outline" size="sm" className="rounded-full border-accent/30 text-accent hover:bg-accent/10">
+                    Masquer <ChevronUp className="ml-1 h-4 w-4" />
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className="text-center mb-6">
+                <Button onClick={() => setShowMore(true)} variant="outline" className="rounded-full border-accent/30 text-accent hover:bg-accent/10">
+                  Voir plus de régions ({primaryRest.length}) <ChevronDown className="ml-1 h-4 w-4" />
+                </Button>
+              </div>
+            )}
+          </>
+        )}
+
         {/* Secondary regions - expandable */}
-        {!showAll ? (
+        {!showSecondary ? (
           <div className="text-center">
-            <Button onClick={() => setShowAll(true)} variant="outline" className="rounded-full border-accent/30 text-accent hover:bg-accent/10">
+            <Button onClick={() => setShowSecondary(true)} variant="outline" className="rounded-full border-accent/30 text-accent hover:bg-accent/10">
               {regionsFirst ? "Voir Paris & Île-de-France" : "Voir toutes les régions de France"} <ChevronDown className="ml-1 h-4 w-4" />
             </Button>
           </div>
         ) : (
           <>
-            <div className={`grid grid-cols-1 sm:grid-cols-2 ${secondaryGridCols} gap-6`}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {secondaryRegions.map((r, i) => (
                 <RegionCard key={r.name} r={r} i={i} />
               ))}
             </div>
             <div className="mt-6 text-center">
-              <Button onClick={() => setShowAll(false)} variant="outline" size="sm" className="rounded-full border-accent/30 text-accent hover:bg-accent/10">
+              <Button onClick={() => setShowSecondary(false)} variant="outline" size="sm" className="rounded-full border-accent/30 text-accent hover:bg-accent/10">
                 Masquer <ChevronUp className="ml-1 h-4 w-4" />
               </Button>
             </div>
