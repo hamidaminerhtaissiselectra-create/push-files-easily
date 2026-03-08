@@ -4,13 +4,14 @@ import Footer from "@/components/Footer";
 import { useSEO } from "@/hooks/useSEO";
 import Breadcrumbs from "@/components/SEO/Breadcrumbs";
 import AnimatedSection from "@/components/AnimatedSection";
-import { useRef } from "react";
+import { useRef, useCallback, useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
   MapPin, 
   ArrowRight, 
+  ArrowLeft,
   Phone, 
   Clock, 
   Award,
@@ -32,8 +33,166 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import useEmblaCarousel from "embla-carousel-react";
 import ileDeFranceImg from "@/assets/regions/ile-de-france.webp";
 import { usePhoneCall } from "@/hooks/usePhoneCall";
+
+interface ArrondissementCard {
+  name: string;
+  slug: string;
+  image: string;
+  description: string;
+  highlight: string;
+}
+
+const arrondissements: ArrondissementCard[] = [
+  { name: "Paris 1er", slug: "reparation-volet-paris-1", image: "/images/zones/paris-1.webp", description: "Quartier du Louvre et des Halles — dépannage de volets roulants sur immeubles classés et commerces de prestige.", highlight: "Louvre & Halles" },
+  { name: "Paris 2e", slug: "reparation-volet-paris-2", image: "/images/zones/paris-2.webp", description: "Passages couverts et Bourse — intervention rapide sur volets anciens et motorisation de stores.", highlight: "Bourse & Passages" },
+  { name: "Paris 3e", slug: "reparation-volet-paris-3", image: "/images/zones/paris-3.webp", description: "Haut Marais — réparation de volets sur façades historiques et résidences de caractère.", highlight: "Haut Marais" },
+  { name: "Paris 4e", slug: "reparation-volet-paris-4", image: "/images/zones/paris-4.webp", description: "Île de la Cité et Marais — spécialiste volets roulants en copropriétés haussmanniennes.", highlight: "Île de la Cité" },
+  { name: "Paris 5e", slug: "reparation-volet-paris-5", image: "/images/zones/paris-5.webp", description: "Quartier Latin et Panthéon — dépannage urgent de volets bloqués pour étudiants et résidents.", highlight: "Quartier Latin" },
+  { name: "Paris 6e", slug: "reparation-volet-paris-6", image: "/images/zones/paris-6.webp", description: "Saint-Germain-des-Prés — installation et remplacement de volets sur immeubles bourgeois.", highlight: "Saint-Germain" },
+  { name: "Paris 7e", slug: "reparation-volet-paris-7", image: "/images/zones/paris-7.webp", description: "Tour Eiffel et Invalides — motorisation et réparation de volets dans le quartier diplomatique.", highlight: "Tour Eiffel" },
+  { name: "Paris 8e", slug: "reparation-volet-paris-8", image: "/images/zones/paris-8.webp", description: "Champs-Élysées et Madeleine — intervention volets roulants pour boutiques et résidences de luxe.", highlight: "Champs-Élysées" },
+  { name: "Paris 9e", slug: "reparation-volet-paris-9", image: "/images/zones/paris-9.webp", description: "Opéra Garnier et Grands Boulevards — dépannage de volets sur immeubles de spectacle et habitations.", highlight: "Opéra" },
+  { name: "Paris 10e", slug: "reparation-volet-paris-10", image: "/images/zones/paris-10.webp", description: "Canal Saint-Martin et gares — réparation express de volets pour riverains et locaux commerciaux.", highlight: "Canal St-Martin" },
+  { name: "Paris 11e", slug: "reparation-volet-paris-11", image: "/images/zones/paris-11.webp", description: "Bastille et Oberkampf — installation de volets sécurisés pour appartements et restaurants.", highlight: "Bastille" },
+  { name: "Paris 12e", slug: "reparation-volet-paris-12", image: "/images/zones/paris-12.webp", description: "Bercy et Bois de Vincennes — remplacement de volets vieillissants et pose de motorisation Somfy.", highlight: "Bercy Village" },
+  { name: "Paris 13e", slug: "reparation-volet-paris-13", image: "/images/zones/paris-13.webp", description: "Bibliothèque et Chinatown — dépannage volets dans les résidences modernes et tours d'habitation.", highlight: "BnF & Tolbiac" },
+  { name: "Paris 14e", slug: "reparation-volet-paris-14", image: "/images/zones/paris-14.webp", description: "Montparnasse et Alésia — réparation de volets anciens et modernisation énergétique.", highlight: "Montparnasse" },
+  { name: "Paris 15e", slug: "reparation-volet-paris-15", image: "/images/zones/paris-15.webp", description: "Plus grand arrondissement — intervention massive sur copropriétés et pavillons résidentiels.", highlight: "Convention" },
+  { name: "Paris 16e", slug: "reparation-volet-paris-16", image: "/images/zones/paris-16.webp", description: "Trocadéro et Auteuil — volets roulants haut de gamme et motorisation domotique connectée.", highlight: "Trocadéro" },
+  { name: "Paris 17e", slug: "reparation-volet-paris-17", image: "/images/zones/paris-17.webp", description: "Batignolles et Ternes — remplacement de sangles cassées et remise en service de tabliers bloqués.", highlight: "Batignolles" },
+  { name: "Paris 18e", slug: "reparation-volet-paris-18", image: "/images/zones/paris-18.webp", description: "Montmartre et Sacré-Cœur — dépannage de volets sur façades en pente et immeubles atypiques.", highlight: "Montmartre" },
+  { name: "Paris 19e", slug: "reparation-volet-paris-19", image: "/images/zones/paris-19.webp", description: "Buttes-Chaumont et Villette — installation de volets isolants pour économies d'énergie.", highlight: "Buttes-Chaumont" },
+  { name: "Paris 20e", slug: "reparation-volet-paris-20", image: "/images/zones/paris-20.webp", description: "Belleville et Ménilmontant — réparation de volets en urgence et pose de modèles anti-effraction.", highlight: "Belleville" },
+];
+
+const CitySlide = ({ city }: { city: ArrondissementCard }) => (
+  <div className="min-w-0 shrink-0 grow-0 basis-full sm:basis-1/2 lg:basis-1/4 pl-4">
+    <Link to={`/zones-intervention/${city.slug}`} className="group flex flex-col h-full">
+      <div className="relative h-40 w-full overflow-hidden rounded-t-2xl shadow-md">
+        <img
+          src={city.image}
+          alt={`Réparation volets roulants ${city.name}`}
+          className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+        <h3 className="absolute bottom-4 left-4 right-4 text-lg font-bold text-white drop-shadow-lg">
+          {city.name}
+        </h3>
+      </div>
+      <div className="flex-1 p-5 rounded-b-2xl border border-t-0 bg-card transition-all duration-500 card-shadow group-hover:card-shadow-hover">
+        <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+          {city.description}
+        </p>
+        <div className="text-[10px] text-muted-foreground font-medium mb-4">
+          <span className="px-2 py-1 rounded-md bg-accent/5 border border-accent/10">{city.highlight}</span>
+        </div>
+        <div className="mt-auto flex items-center gap-2 text-xs font-semibold text-accent transition-all duration-300 group-hover:gap-3">
+          Voir les détails <ArrowRight className="h-3 w-3" />
+        </div>
+      </div>
+    </Link>
+  </div>
+);
+
+const CarouselSection = ({ 
+  items, 
+  title, 
+  subtitle, 
+  iconBg, 
+  icon: Icon 
+}: { 
+  items: ArrondissementCard[]; 
+  title: string; 
+  subtitle: string; 
+  iconBg: string; 
+  icon: React.ElementType;
+}) => {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+    align: "start", 
+    loop: true,
+    slidesToScroll: 1,
+  });
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const scrollSnaps = emblaApi?.scrollSnapList() || [];
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setCanScrollPrev(emblaApi.canScrollPrev());
+    setCanScrollNext(emblaApi.canScrollNext());
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    onSelect();
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+    return () => { emblaApi.off("select", onSelect); };
+  }, [emblaApi, onSelect]);
+
+  return (
+    <div className="mb-16">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <div className={`w-10 h-10 rounded-xl ${iconBg} flex items-center justify-center shadow-lg`}>
+              <Icon className="h-5 w-5 text-white" />
+            </div>
+            <h3 className="font-display text-xl font-bold text-foreground">{title}</h3>
+          </div>
+          <p className="text-sm text-muted-foreground max-w-2xl">{subtitle}</p>
+        </div>
+        <div className="hidden sm:flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-9 w-9 rounded-full border-accent/30 text-accent hover:bg-accent/10"
+            onClick={() => emblaApi?.scrollPrev()}
+            disabled={!canScrollPrev}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-9 w-9 rounded-full border-accent/30 text-accent hover:bg-accent/10"
+            onClick={() => emblaApi?.scrollNext()}
+            disabled={!canScrollNext}
+          >
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+
+      <div ref={emblaRef} className="overflow-hidden">
+        <div className="flex -ml-4">
+          {items.map((city) => (
+            <CitySlide key={city.slug} city={city} />
+          ))}
+        </div>
+      </div>
+
+      {/* Dots */}
+      <div className="flex justify-center gap-1.5 mt-6">
+        {scrollSnaps.map((_, idx) => (
+          <button
+            key={idx}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              idx === selectedIndex ? "w-6 bg-accent" : "w-2 bg-accent/20"
+            }`}
+            onClick={() => emblaApi?.scrollTo(idx)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const ParisPage = () => {
   const heroRef = useRef<HTMLElement>(null);
@@ -60,113 +219,29 @@ const ParisPage = () => {
     { icon: Award, value: "4.9/5", label: "Note moyenne", color: "text-service-blue" }
   ];
 
-  const arrondissementsGroups = [
-    {
-      title: "Rive Droite — Centre & Nord",
-      subtitle: "Du 1er au 4e, 9e au 12e, 17e au 20e arrondissement",
-      image: "/images/zones/paris-1.webp",
-      badge: "Centre Historique",
-      badgeVariant: "serviceBlue" as const,
-      description: "Le cœur historique de Paris, du Marais au Louvre en passant par les Grands Boulevards. Nos techniciens interviennent sur les volets roulants des immeubles haussmanniens et modernes avec une expertise adaptée au patrimoine parisien.",
-      arrondissements: [
-        { name: "Paris 1er", slug: "reparation-volet-paris-1", image: "/images/zones/paris-1.webp" },
-        { name: "Paris 2e", slug: "reparation-volet-paris-2", image: "/images/zones/paris-2.webp" },
-        { name: "Paris 3e", slug: "reparation-volet-paris-3", image: "/images/zones/paris-3.webp" },
-        { name: "Paris 4e", slug: "reparation-volet-paris-4", image: "/images/zones/paris-4.webp" },
-        { name: "Paris 9e", slug: "reparation-volet-paris-9", image: "/images/zones/paris-9.webp" },
-        { name: "Paris 10e", slug: "reparation-volet-paris-10", image: "/images/zones/paris-10.webp" },
-        { name: "Paris 11e", slug: "reparation-volet-paris-11", image: "/images/zones/paris-11.webp" },
-        { name: "Paris 12e", slug: "reparation-volet-paris-12", image: "/images/zones/paris-12.webp" },
-        { name: "Paris 17e", slug: "reparation-volet-paris-17", image: "/images/zones/paris-17.webp" },
-        { name: "Paris 18e", slug: "reparation-volet-paris-18", image: "/images/zones/paris-18.webp" },
-        { name: "Paris 19e", slug: "reparation-volet-paris-19", image: "/images/zones/paris-19.webp" },
-        { name: "Paris 20e", slug: "reparation-volet-paris-20", image: "/images/zones/paris-20.webp" },
-      ]
-    },
-    {
-      title: "Rive Gauche & Ouest",
-      subtitle: "Du 5e au 8e, 13e au 16e arrondissement",
-      image: "/images/zones/paris-8.webp",
-      badge: "Quartiers Résidentiels",
-      badgeVariant: "serviceOrange" as const,
-      description: "Les quartiers résidentiels et chics de la rive gauche, de Saint-Germain-des-Prés aux Champs-Élysées. Intervention sur volets roulants de standing, motorisation Somfy et domotique connectée pour les résidences de prestige.",
-      arrondissements: [
-        { name: "Paris 5e", slug: "reparation-volet-paris-5", image: "/images/zones/paris-5.webp" },
-        { name: "Paris 6e", slug: "reparation-volet-paris-6", image: "/images/zones/paris-6.webp" },
-        { name: "Paris 7e", slug: "reparation-volet-paris-7", image: "/images/zones/paris-7.webp" },
-        { name: "Paris 8e", slug: "reparation-volet-paris-8", image: "/images/zones/paris-8.webp" },
-        { name: "Paris 13e", slug: "reparation-volet-paris-13", image: "/images/zones/paris-13.webp" },
-        { name: "Paris 14e", slug: "reparation-volet-paris-14", image: "/images/zones/paris-14.webp" },
-        { name: "Paris 15e", slug: "reparation-volet-paris-15", image: "/images/zones/paris-15.webp" },
-        { name: "Paris 16e", slug: "reparation-volet-paris-16", image: "/images/zones/paris-16.webp" },
-      ]
-    }
-  ];
+  const riveDroite = arrondissements.filter(a => 
+    ["1", "2", "3", "4", "9", "10", "11", "12", "17", "18", "19", "20"].some(n => a.name.includes(`Paris ${n}e`) || a.name.includes(`Paris ${n}er`))
+  );
+  const riveGauche = arrondissements.filter(a => 
+    ["5", "6", "7", "8", "13", "14", "15", "16"].some(n => a.name.includes(`Paris ${n}e`) || a.name.includes(`Paris ${n}er`))
+  );
 
   const services = [
-    {
-      icon: Wrench,
-      title: "Réparation & Dépannage",
-      description: "Intervention rapide sur volets bloqués ou cassés à Paris. Diagnostic gratuit et réparation immédiate.",
-      link: "/services/reparation-volets-roulants"
-    },
-    {
-      icon: Settings,
-      title: "Installation & Remplacement",
-      description: "Pose de volets roulants neufs sur-mesure à Paris. Solutions aluminium ou PVC haute qualité.",
-      link: "/services/installation-remplacement-volets"
-    },
-    {
-      icon: Zap,
-      title: "Motorisation",
-      description: "Modernisez vos volets manuels à Paris. Installation de moteurs Somfy, Bubendorff et solutions connectées.",
-      link: "/services/motorisation-domotique"
-    },
-    {
-      icon: Home,
-      title: "Domotique",
-      description: "Centralisez le contrôle de vos volets à Paris. Pilotage à distance via smartphone et scénarios intelligents.",
-      link: "/services/motorisation-domotique"
-    },
-    {
-      icon: ShieldCheck,
-      title: "Sécurité Renforcée",
-      description: "Installation de verrous de sécurité et volets anti-effraction à Paris pour protéger votre habitat.",
-      link: "/services/installation-remplacement-volets"
-    },
-    {
-      icon: Truck,
-      title: "Dépannage Express",
-      description: "Service d'urgence disponible à Paris pour les pannes critiques. Intervention sous 24h garantie.",
-      link: "/services/depannage-express"
-    }
+    { icon: Wrench, title: "Réparation & Dépannage", description: "Intervention rapide sur volets bloqués ou cassés à Paris. Diagnostic gratuit et réparation immédiate.", link: "/services/reparation-volets-roulants" },
+    { icon: Settings, title: "Installation & Remplacement", description: "Pose de volets roulants neufs sur-mesure à Paris. Solutions aluminium ou PVC haute qualité.", link: "/services/installation-remplacement-volets" },
+    { icon: Zap, title: "Motorisation", description: "Modernisez vos volets manuels à Paris. Installation de moteurs Somfy, Bubendorff et solutions connectées.", link: "/services/motorisation-domotique" },
+    { icon: Home, title: "Domotique", description: "Centralisez le contrôle de vos volets à Paris. Pilotage à distance via smartphone et scénarios intelligents.", link: "/services/motorisation-domotique" },
+    { icon: ShieldCheck, title: "Sécurité Renforcée", description: "Installation de verrous de sécurité et volets anti-effraction à Paris pour protéger votre habitat.", link: "/services/installation-remplacement-volets" },
+    { icon: Truck, title: "Dépannage Express", description: "Service d'urgence disponible à Paris pour les pannes critiques. Intervention sous 24h garantie.", link: "/services/depannage-express" }
   ];
 
   const faqs = [
-    {
-      question: "Quel est le délai d'intervention pour un volet bloqué à Paris ?",
-      answer: "Nous intervenons en urgence sous 24h à 48h pour tous les dépannages à Paris. Pour les volets bloqués en position ouverte représentant un risque de sécurité, nous traitons la demande en priorité et intervenons souvent le jour même. Appelez le 06 03 20 59 67."
-    },
-    {
-      question: "Combien coûte la réparation d'un volet roulant à Paris ?",
-      answer: "Le coût dépend de la panne : remplacement de sangle (60-120€), changement de moteur Somfy/Bubendorff (180-350€), remplacement de lames (80-200€). Diagnostic gratuit et devis détaillé avant toute intervention. Pas de frais de déplacement à Paris."
-    },
-    {
-      question: "Intervenez-vous dans tous les arrondissements de Paris ?",
-      answer: "Oui, nous couvrons les 20 arrondissements de Paris sans exception. Nos techniciens connaissent les spécificités de chaque quartier : immeubles haussmanniens du 7e et 16e, ateliers du Marais, résidences modernes du 13e et 15e."
-    },
-    {
-      question: "Travaillez-vous sur les volets des immeubles haussmanniens ?",
-      answer: "Oui, c'est notre spécialité à Paris. Les volets d'immeubles haussmanniens ont des contraintes spécifiques (coffres intégrés, hauteurs atypiques). Nos techniciens sont formés pour intervenir sans dégrader les éléments architecturaux protégés."
-    },
-    {
-      question: "Proposez-vous la motorisation pour les volets manuels parisiens ?",
-      answer: "Absolument. Nous motorisons vos volets manuels existants sans travaux de maçonnerie ni modification de façade. Installation de moteurs Somfy (filaires, radio ou connectés) en 1 à 2 heures par volet. Compatible Google Home, Alexa, Apple HomeKit."
-    },
-    {
-      question: "Êtes-vous certifié RGE pour bénéficier de MaPrimeRénov' ?",
-      answer: "Oui, Répar'Action Volets est certifié RGE et Qualibat. Cette certification vous permet de bénéficier de MaPrimeRénov', de l'éco-PTZ et du crédit d'impôt pour l'installation de volets isolants ou de double vitrage à Paris."
-    }
+    { question: "Quel est le délai d'intervention pour un volet bloqué à Paris ?", answer: "Nous intervenons en urgence sous 24h à 48h pour tous les dépannages à Paris. Pour les volets bloqués en position ouverte représentant un risque de sécurité, nous traitons la demande en priorité et intervenons souvent le jour même. Appelez le 06 03 20 59 67." },
+    { question: "Combien coûte la réparation d'un volet roulant à Paris ?", answer: "Le coût dépend de la panne : remplacement de sangle (60-120€), changement de moteur Somfy/Bubendorff (180-350€), remplacement de lames (80-200€). Diagnostic gratuit et devis détaillé avant toute intervention. Pas de frais de déplacement à Paris." },
+    { question: "Intervenez-vous dans tous les arrondissements de Paris ?", answer: "Oui, nous couvrons les 20 arrondissements de Paris sans exception. Nos techniciens connaissent les spécificités de chaque quartier : immeubles haussmanniens du 7e et 16e, ateliers du Marais, résidences modernes du 13e et 15e." },
+    { question: "Travaillez-vous sur les volets des immeubles haussmanniens ?", answer: "Oui, c'est notre spécialité à Paris. Les volets d'immeubles haussmanniens ont des contraintes spécifiques (coffres intégrés, hauteurs atypiques). Nos techniciens sont formés pour intervenir sans dégrader les éléments architecturaux protégés." },
+    { question: "Proposez-vous la motorisation pour les volets manuels parisiens ?", answer: "Absolument. Nous motorisons vos volets manuels existants sans travaux de maçonnerie ni modification de façade. Installation de moteurs Somfy (filaires, radio ou connectés) en 1 à 2 heures par volet. Compatible Google Home, Alexa, Apple HomeKit." },
+    { question: "Êtes-vous certifié RGE pour bénéficier de MaPrimeRénov' ?", answer: "Oui, Répar'Action Volets est certifié RGE et Qualibat. Cette certification vous permet de bénéficier de MaPrimeRénov', de l'éco-PTZ et du crédit d'impôt pour l'installation de volets isolants ou de double vitrage à Paris." }
   ];
 
   return (
@@ -182,98 +257,42 @@ const ParisPage = () => {
         <div className="container mx-auto px-4 relative z-10">
           <Breadcrumbs items={breadcrumbItems} />
           <div className="max-w-3xl mt-8">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }} 
-              animate={{ opacity: 1, y: 0 }} 
-              transition={{ duration: 1, ease: "easeOut" }}
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 text-accent text-sm font-semibold border border-accent/20 mb-8 backdrop-blur-sm">
                 <MapPin className="h-4 w-4" />
                 20 Arrondissements — Intervention Express
               </span>
             </motion.div>
-            
-            <motion.h1 
-              initial={{ opacity: 0, y: 30 }} 
-              animate={{ opacity: 1, y: 0 }} 
-              transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-              className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-8 text-foreground"
-            >
+            <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }} className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-8 text-foreground">
               Dépannage & Réparation de Volets Roulants à <span className="text-accent">Paris</span>
             </motion.h1>
-            
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }} 
-              animate={{ opacity: 1, y: 0 }} 
-              transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
-              className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl leading-relaxed"
-            >
+            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.4 }} className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl leading-relaxed">
               Répar'Action Volets est votre expert de proximité pour le dépannage et la réparation de volets roulants dans tous les arrondissements de Paris. Intervention rapide, diagnostic gratuit et garantie 3 ans.
             </motion.p>
-            
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }} 
-              animate={{ opacity: 1, y: 0 }} 
-              transition={{ duration: 1, delay: 0.6, ease: "easeOut" }}
-              className="flex flex-wrap gap-4 mb-12"
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.6 }} className="flex flex-wrap gap-4 mb-12">
               <Button size="lg" variant="accent" asChild className="px-8 py-7 text-lg font-bold rounded-full shadow-xl transition-all duration-300 hover:scale-105">
-                <a href="/#devis" className="flex items-center gap-2">
-                  Demander un Devis Gratuit <ArrowRight className="h-5 w-5" />
-                </a>
+                <a href="/#devis" className="flex items-center gap-2">Demander un Devis Gratuit <ArrowRight className="h-5 w-5" /></a>
               </Button>
               <Button size="lg" variant="accent-outline" asChild className="px-8 py-7 text-lg font-bold rounded-full transition-all duration-300 hover:scale-105">
-                <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} className="flex items-center gap-2">
-                  <Phone className="h-5 w-5" /> {phoneNumber}
-                </a>
+                <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} className="flex items-center gap-2"><Phone className="h-5 w-5" /> {phoneNumber}</a>
               </Button>
             </motion.div>
-
-            <motion.div 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
-              transition={{ duration: 1, delay: 0.8 }}
-              className="flex flex-wrap gap-4"
-            >
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.8, duration: 0.8 }}
-                className="flex items-center gap-3 px-5 py-3 rounded-xl border text-sm font-bold backdrop-blur-sm"
-              >
-                <Badge variant="serviceBlue">
-                  <Clock className="h-5 w-5" />
-                  <span>24-48h</span>
-                </Badge>
-              </motion.div>
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.9, duration: 0.8 }}
-                className="flex items-center gap-3 px-5 py-3 rounded-xl border text-sm font-bold backdrop-blur-sm"
-              >
-                <Badge variant="serviceOrange">
-                  <Award className="h-5 w-5" />
-                  <span>Certifié RGE</span>
-                </Badge>
-              </motion.div>
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1.0, duration: 0.8 }}
-                className="flex items-center gap-3 px-5 py-3 rounded-xl border text-sm font-bold backdrop-blur-sm"
-              >
-                <Badge variant="serviceEmerald">
-                  <Shield className="h-5 w-5" />
-                  <span>Garantie 3 ans</span>
-                </Badge>
-              </motion.div>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.8 }} className="flex flex-wrap gap-4">
+              {[
+                { icon: Clock, label: "24-48h", variant: "serviceBlue" as const },
+                { icon: Award, label: "Certifié RGE", variant: "serviceOrange" as const },
+                { icon: Shield, label: "Garantie 3 ans", variant: "serviceEmerald" as const },
+              ].map((b, i) => (
+                <motion.div key={b.label} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.8 + i * 0.1, duration: 0.8 }} className="flex items-center gap-3 px-5 py-3 rounded-xl border text-sm font-bold backdrop-blur-sm">
+                  <Badge variant={b.variant}><b.icon className="h-5 w-5" /><span>{b.label}</span></Badge>
+                </motion.div>
+              ))}
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* Stats */}
       <section className="py-12 bg-card border-y border-border">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -290,11 +309,11 @@ const ParisPage = () => {
         </div>
       </section>
 
-      {/* Arrondissements — Blocs Image + Texte */}
-      <section className="py-20 bg-background">
+      {/* Arrondissements Carousels */}
+      <section className="py-20 bg-section-gradient">
         <div className="container mx-auto px-4">
           <AnimatedSection animation="fade-up">
-            <div className="text-center mb-16">
+            <div className="text-center mb-14">
               <Badge variant="default" className="gap-2 px-3 py-1 rounded-full text-sm font-semibold mb-4 bg-accent/10 text-accent border border-accent/20">
                 <MapPin className="h-3.5 w-3.5" /> 20 Arrondissements
               </Badge>
@@ -303,64 +322,21 @@ const ParisPage = () => {
             </div>
           </AnimatedSection>
 
-          {arrondissementsGroups.map((group, groupIndex) => (
-            <AnimatedSection key={groupIndex} animation="fade-up">
-              <div className={`grid md:grid-cols-2 gap-12 items-center ${groupIndex > 0 ? 'mt-24' : ''} ${groupIndex % 2 !== 0 ? '' : ''}`}>
-                <div className={`relative aspect-video rounded-2xl overflow-hidden shadow-2xl group ${groupIndex % 2 !== 0 ? 'md:order-2' : ''}`}>
-                  <img 
-                    src={group.image} 
-                    alt={group.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
-                </div>
-                <div className={groupIndex % 2 !== 0 ? 'md:order-1' : ''}>
-                  <Badge variant={group.badgeVariant} className="gap-2 px-3 py-1 rounded-full text-sm font-semibold mb-4">
-                    <Building2 className="h-3.5 w-3.5" /> {group.badge}
-                  </Badge>
-                  <h3 className="font-display text-2xl md:text-3xl font-bold mb-4">{group.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-2">{group.subtitle}</p>
-                  <p className="text-muted-foreground mb-6 leading-relaxed">{group.description}</p>
-                  
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
-                    {group.arrondissements.map((arr, arrIdx) => (
-                      <motion.div
-                        key={arr.slug}
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5, delay: arrIdx * 0.05 }}
-                        className="group/card"
-                      >
-                        <Link to={`/zones-intervention/${arr.slug}`} className="block">
-                          <div className="relative h-32 w-full overflow-hidden rounded-t-xl">
-                            <img 
-                              src={arr.image} 
-                              alt={`Réparation volets ${arr.name}`} 
-                              className="h-full w-full object-cover transition-transform duration-500 group-hover/card:scale-105"
-                              loading="lazy"
-                            />
-                            <div className="absolute inset-0 bg-black/10 group-hover/card:bg-black/5 transition-colors" />
-                          </div>
-                          <div className={`p-4 rounded-b-xl border border-t-0 transition-all duration-300 card-shadow group-hover/card:card-shadow-hover ${groupIndex === 0 ? 'bg-service-blue/5 border-service-blue/20' : 'bg-service-orange/5 border-service-orange/20'}`}>
-                            <div className="flex items-center gap-2">
-                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center shadow-sm ${groupIndex === 0 ? 'bg-service-blue text-white' : 'bg-service-orange text-white'}`}>
-                                <MapPin className="h-4 w-4" />
-                              </div>
-                              <span className="text-sm font-bold text-foreground">{arr.name}</span>
-                            </div>
-                            <div className="mt-2 flex items-center gap-1 text-xs font-semibold text-accent transition-all duration-300 group-hover/card:gap-2">
-                              Voir les détails <ArrowRight className="h-3 w-3" />
-                            </div>
-                          </div>
-                        </Link>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </AnimatedSection>
-          ))}
+          <CarouselSection
+            items={riveDroite}
+            title="Rive Droite — Centre & Nord"
+            subtitle="Du 1er au 4e, 9e au 12e, 17e au 20e arrondissement. Intervention sur immeubles haussmanniens et modernes avec expertise adaptée au patrimoine parisien."
+            iconBg="bg-service-blue"
+            icon={Building2}
+          />
+
+          <CarouselSection
+            items={riveGauche}
+            title="Rive Gauche & Ouest"
+            subtitle="Du 5e au 8e, 13e au 16e arrondissement. Quartiers résidentiels et de prestige — motorisation Somfy et domotique connectée."
+            iconBg="bg-service-orange"
+            icon={Building2}
+          />
         </div>
       </section>
 
@@ -372,15 +348,10 @@ const ParisPage = () => {
               <Badge variant="default" className="gap-2 px-3 py-1 rounded-full text-sm font-semibold mb-4 bg-service-violet/10 text-service-violet border border-service-violet/20">
                 <Wrench className="h-3.5 w-3.5" /> Nos Services
               </Badge>
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mt-2 mb-4">
-                Nos Services de Volets Roulants à Paris
-              </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Répar'Action Volets propose une gamme complète de solutions pour vos volets roulants dans tous les arrondissements de Paris.
-              </p>
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mt-2 mb-4">Nos Services de Volets Roulants à Paris</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">Répar'Action Volets propose une gamme complète de solutions pour vos volets roulants dans tous les arrondissements de Paris.</p>
             </div>
           </AnimatedSection>
-
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service, index) => (
               <AnimatedSection key={index} animation="scale-in" delay={index * 100}>
@@ -391,12 +362,8 @@ const ParisPage = () => {
                     </div>
                     <h3 className="font-bold text-foreground text-lg mb-2">{service.title}</h3>
                     <p className="text-muted-foreground text-sm mb-4">{service.description}</p>
-                    <Link 
-                      to={service.link}
-                      className="text-primary font-medium text-sm hover:underline inline-flex items-center gap-1"
-                    >
-                      En savoir plus
-                      <ArrowRight className="w-4 h-4" />
+                    <Link to={service.link} className="text-primary font-medium text-sm hover:underline inline-flex items-center gap-1">
+                      En savoir plus <ArrowRight className="w-4 h-4" />
                     </Link>
                   </CardContent>
                 </Card>
@@ -406,17 +373,11 @@ const ParisPage = () => {
         </div>
       </section>
 
-      {/* FAQ Section */}
+      {/* FAQ */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }} 
-              whileInView={{ opacity: 1, y: 0 }} 
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-center mb-12"
-            >
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="text-center mb-12">
               <Badge variant="default" className="gap-2 px-3 py-1 rounded-full text-sm font-semibold mb-4 bg-accent/10 text-accent border border-accent/20">
                 <HelpCircle className="h-3.5 w-3.5" /> Questions Fréquentes
               </Badge>
@@ -435,7 +396,7 @@ const ParisPage = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA */}
       <section className="py-20 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Besoin d'un dépannage à Paris ?</h2>
