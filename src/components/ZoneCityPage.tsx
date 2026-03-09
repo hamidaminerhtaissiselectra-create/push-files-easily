@@ -395,11 +395,6 @@ const ZoneCityPage = ({ city }: ZoneCityPageProps) => {
                   <Phone className="h-5 w-5" /> 06 03 20 59 67
                 </a>
               </Button>
-              <Button size="lg" asChild className="bg-[#25D366] text-white hover:bg-[#128C7E] px-8 py-7 text-lg font-bold rounded-full shadow-xl">
-                <a href="https://wa.me/33603205967" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-                  <MessageCircle className="h-5 w-5" /> WhatsApp
-                </a>
-              </Button>
             </div>
           </motion.div>
         </div>
