@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { MapPin, ChevronRight, ArrowRight, Phone, CheckCircle2, Shield, Star, Clock, Award, Users, Wrench, Home } from "lucide-react";
+import { MapPin, ChevronRight, ArrowRight, Phone, CheckCircle2, Shield, Star, Clock, Award, Users, Wrench, Home, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
@@ -386,10 +386,19 @@ const ZoneCityPage = ({ city }: ZoneCityPageProps) => {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button size="lg" asChild className="bg-white text-accent hover:bg-white/90 px-8 py-7 text-lg font-bold rounded-full shadow-xl">
-                <a href="/#devis">Demander un Devis</a>
+                <a href="/#devis" className="flex items-center gap-2">
+                  <ArrowRight className="h-5 w-5" /> Demander un Devis
+                </a>
               </Button>
               <Button size="lg" asChild className="border-2 border-white text-white bg-transparent hover:bg-white/10 px-8 py-7 text-lg font-bold rounded-full">
-                <a href="tel:0603205967">Appeler le 06 03 20 59 67</a>
+                <a href="tel:0603205967" className="flex items-center gap-2">
+                  <Phone className="h-5 w-5" /> 06 03 20 59 67
+                </a>
+              </Button>
+              <Button size="lg" asChild className="bg-[#25D366] text-white hover:bg-[#128C7E] px-8 py-7 text-lg font-bold rounded-full shadow-xl">
+                <a href="https://wa.me/33603205967" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                  <MessageCircle className="h-5 w-5" /> WhatsApp
+                </a>
               </Button>
             </div>
           </motion.div>
