@@ -14,7 +14,7 @@ import QuoteFormSection from "@/components/QuoteFormSection";
 import RepairShowcaseSection from "@/components/RepairShowcaseSection";
 import LocalZonesGrid from "@/components/LocalZonesGrid";
 import FAQSection from "@/components/FAQSection";
-import emergencyTechnicianImg from "@/assets/paris-sacre-coeur-depannage.webp";
+const emergencyTechnicianImg = "/images/assets/paris-sacre-coeur-depannage.webp";
 import { fadeUp, staggerItem, hoverLift, heroEntry } from "@/lib/animations";
 
 const situations = [

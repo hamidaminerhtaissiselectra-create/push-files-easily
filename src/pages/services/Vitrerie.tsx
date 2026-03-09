@@ -14,7 +14,7 @@ import QuoteFormSection from "@/components/QuoteFormSection";
 import RepairShowcaseSection from "@/components/RepairShowcaseSection";
 import LocalZonesGrid from "@/components/LocalZonesGrid";
 import FAQSection from "@/components/FAQSection";
-import glazierTechnicianImg from "@/assets/paris-notre-dame-vitrerie.webp";
+const glazierTechnicianImg = "/images/assets/paris-notre-dame-vitrerie.webp";
 import { fadeUp, staggerItem, hoverLift, heroEntry } from "@/lib/animations";
 
 const typesVitrage = [

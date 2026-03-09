@@ -12,9 +12,9 @@ import QuoteFormSection from "@/components/QuoteFormSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import LocalZonesGrid from "@/components/LocalZonesGrid";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import aboutTeamImg from "@/assets/paris-panorama-about.webp";
-import aboutValuesImg from "@/assets/idf-versailles-valeurs.webp";
-import aboutExpertiseImg from "@/assets/paris-cour-expertise.webp";
+const aboutTeamImg = "/images/assets/paris-panorama-about.webp";
+const aboutValuesImg = "/images/assets/idf-versailles-valeurs.webp";
+const aboutExpertiseImg = "/images/assets/paris-cour-expertise.webp";
 
 const expertiseItems = [
   { icon: Trophy, title: "10+ ans d'expérience", desc: "Depuis plus de 10 ans, nous intervenons sur des milliers de volets roulants. Notre expérience nous permet de diagnostiquer et résoudre rapidement tout type de panne.", color: "bg-service-blue", iconShadow: "shadow-[0_4px_14px_hsl(213,72%,50%,0.35)]" },

@@ -14,7 +14,7 @@ import QuoteFormSection from "@/components/QuoteFormSection";
 import RepairShowcaseSection from "@/components/RepairShowcaseSection";
 import LocalZonesGrid from "@/components/LocalZonesGrid";
 import FAQSection from "@/components/FAQSection";
-import installationTechnicianImg from "@/assets/paris-vosges-installation.webp";
+const installationTechnicianImg = "/images/assets/paris-vosges-installation.webp";
 import { fadeUp, staggerItem, hoverLift, heroEntry } from "@/lib/animations";
 
 const avantages = [

@@ -34,8 +34,8 @@ import {
 } from "@/components/ui/accordion";
 import QuoteFormSection from "@/components/QuoteFormSection";
 
-import ileDeFranceImg from "@/assets/regions/ile-de-france.webp";
-import parisCityscapeImg from "@/assets/regions/paris-cityscape.webp";
+const ileDeFranceImg = "/images/assets/regions/ile-de-france.webp";
+const parisCityscapeImg = "/images/assets/regions/paris-cityscape.webp";
 
 const ZonesIntervention = () => {
   

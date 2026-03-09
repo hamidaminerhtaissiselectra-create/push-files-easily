@@ -10,7 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { blogArticles } from "@/data/blogArticles";
-import blogHeroImg from "@/assets/paris-saint-germain-blog.webp";
+const blogHeroImg = "/images/assets/paris-saint-germain-blog.webp";
 
 // Map categories to colored badge variants and icons
 const categoryStyle: Record<string, { variant: "serviceBlue" | "serviceOrange" | "serviceEmerald" | "serviceRose" | "serviceViolet" | "serviceCyan" | "accent"; icon: typeof Wrench }> = {

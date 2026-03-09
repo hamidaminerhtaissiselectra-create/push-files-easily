@@ -14,10 +14,10 @@ import QuoteFormSection from "@/components/QuoteFormSection";
 import RepairShowcaseSection from "@/components/RepairShowcaseSection";
 import LocalZonesGrid from "@/components/LocalZonesGrid";
 import FAQSection from "@/components/FAQSection";
-import motorizationWiredImg from "@/assets/motorization-wired.webp";
-import motorizationRadioImg from "@/assets/motorization-radio.webp";
-import motorizationSmartImg from "@/assets/motorization-smart.webp";
-import motorizationTechnicianImg from "@/assets/paris-defense-motorisation.webp";
+const motorizationWiredImg = "/images/assets/motorization-wired.webp";
+const motorizationRadioImg = "/images/assets/motorization-radio.webp";
+const motorizationSmartImg = "/images/assets/motorization-smart.webp";
+const motorizationTechnicianImg = "/images/assets/paris-defense-motorisation.webp";
 import { fadeUp, staggerItem, hoverLift, heroEntry } from "@/lib/animations";
 
 const solutions = [
