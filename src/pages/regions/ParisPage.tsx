@@ -24,7 +24,9 @@ import {
   HelpCircle,
   Home,
   ShieldCheck,
-  Truck
+  Truck,
+  Navigation,
+  Star
 } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
@@ -36,6 +38,7 @@ import {
 import useEmblaCarousel from "embla-carousel-react";
 import ileDeFranceImg from "@/assets/regions/ile-de-france.webp";
 import { usePhoneCall } from "@/hooks/usePhoneCall";
+import { citiesLocationData } from "@/data/villes-geolocalisation";
 
 interface ArrondissementCard {
   name: string;
@@ -43,31 +46,258 @@ interface ArrondissementCard {
   image: string;
   description: string;
   highlight: string;
+  zipCode?: string;
+  lat?: number;
+  lng?: number;
+  searchKeywords?: string;
+  voiceSearch?: string;
 }
 
+// Enhanced data with GPS coordinates, zip codes and voice search
 const arrondissements: ArrondissementCard[] = [
-  { name: "Paris 1er", slug: "reparation-volet-paris-1", image: "/images/zones/paris-1.webp", description: "Quartier du Louvre et des Halles — dépannage de volets roulants sur immeubles classés et commerces de prestige.", highlight: "Louvre & Halles" },
-  { name: "Paris 2e", slug: "reparation-volet-paris-2", image: "/images/zones/paris-2.webp", description: "Passages couverts et Bourse — intervention rapide sur volets anciens et motorisation de stores.", highlight: "Bourse & Passages" },
-  { name: "Paris 3e", slug: "reparation-volet-paris-3", image: "/images/zones/paris-3.webp", description: "Haut Marais — réparation de volets sur façades historiques et résidences de caractère.", highlight: "Haut Marais" },
-  { name: "Paris 4e", slug: "reparation-volet-paris-4", image: "/images/zones/paris-4.webp", description: "Île de la Cité et Marais — spécialiste volets roulants en copropriétés haussmanniennes.", highlight: "Île de la Cité" },
-  { name: "Paris 5e", slug: "reparation-volet-paris-5", image: "/images/zones/paris-5.webp", description: "Quartier Latin et Panthéon — dépannage urgent de volets bloqués pour étudiants et résidents.", highlight: "Quartier Latin" },
-  { name: "Paris 6e", slug: "reparation-volet-paris-6", image: "/images/zones/paris-6.webp", description: "Saint-Germain-des-Prés — installation et remplacement de volets sur immeubles bourgeois.", highlight: "Saint-Germain" },
-  { name: "Paris 7e", slug: "reparation-volet-paris-7", image: "/images/zones/paris-7.webp", description: "Tour Eiffel et Invalides — motorisation et réparation de volets dans le quartier diplomatique.", highlight: "Tour Eiffel" },
-  { name: "Paris 8e", slug: "reparation-volet-paris-8", image: "/images/zones/paris-8.webp", description: "Champs-Élysées et Madeleine — intervention volets roulants pour boutiques et résidences de luxe.", highlight: "Champs-Élysées" },
-  { name: "Paris 9e", slug: "reparation-volet-paris-9", image: "/images/zones/paris-9.webp", description: "Opéra Garnier et Grands Boulevards — dépannage de volets sur immeubles de spectacle et habitations.", highlight: "Opéra" },
-  { name: "Paris 10e", slug: "reparation-volet-paris-10", image: "/images/zones/paris-10.webp", description: "Canal Saint-Martin et gares — réparation express de volets pour riverains et locaux commerciaux.", highlight: "Canal St-Martin" },
-  { name: "Paris 11e", slug: "reparation-volet-paris-11", image: "/images/zones/paris-11.webp", description: "Bastille et Oberkampf — installation de volets sécurisés pour appartements et restaurants.", highlight: "Bastille" },
-  { name: "Paris 12e", slug: "reparation-volet-paris-12", image: "/images/zones/paris-12.webp", description: "Bercy et Bois de Vincennes — remplacement de volets vieillissants et pose de motorisation Somfy.", highlight: "Bercy Village" },
-  { name: "Paris 13e", slug: "reparation-volet-paris-13", image: "/images/zones/paris-13.webp", description: "Bibliothèque et Chinatown — dépannage volets dans les résidences modernes et tours d'habitation.", highlight: "BnF & Tolbiac" },
-  { name: "Paris 14e", slug: "reparation-volet-paris-14", image: "/images/zones/paris-14.webp", description: "Montparnasse et Alésia — réparation de volets anciens et modernisation énergétique.", highlight: "Montparnasse" },
-  { name: "Paris 15e", slug: "reparation-volet-paris-15", image: "/images/zones/paris-15.webp", description: "Plus grand arrondissement — intervention massive sur copropriétés et pavillons résidentiels.", highlight: "Convention" },
-  { name: "Paris 16e", slug: "reparation-volet-paris-16", image: "/images/zones/paris-16.webp", description: "Trocadéro et Auteuil — volets roulants haut de gamme et motorisation domotique connectée.", highlight: "Trocadéro" },
-  { name: "Paris 17e", slug: "reparation-volet-paris-17", image: "/images/zones/paris-17.webp", description: "Batignolles et Ternes — remplacement de sangles cassées et remise en service de tabliers bloqués.", highlight: "Batignolles" },
-  { name: "Paris 18e", slug: "reparation-volet-paris-18", image: "/images/zones/paris-18.webp", description: "Montmartre et Sacré-Cœur — dépannage de volets sur façades en pente et immeubles atypiques.", highlight: "Montmartre" },
-  { name: "Paris 19e", slug: "reparation-volet-paris-19", image: "/images/zones/paris-19.webp", description: "Buttes-Chaumont et Villette — installation de volets isolants pour économies d'énergie.", highlight: "Buttes-Chaumont" },
-  { name: "Paris 20e", slug: "reparation-volet-paris-20", image: "/images/zones/paris-20.webp", description: "Belleville et Ménilmontant — réparation de volets en urgence et pose de modèles anti-effraction.", highlight: "Belleville" },
+  { 
+    name: "Paris 1er", 
+    slug: "reparation-volet-paris-1", 
+    image: "/images/zones/paris-1.webp", 
+    zipCode: "75001",
+    lat: 48.8626,
+    lng: 2.3364,
+    description: "Quartier du Louvre et des Halles — dépannage de volets roulants sur immeubles classés et commerces de prestige.",
+    highlight: "Louvre & Halles",
+    searchKeywords: "volet roulant paris 1er, dépannage volet louvre, réparation volet châtelet halles",
+    voiceSearch: "Où réparer un volet roulant dans le premier arrondissement de Paris près du Louvre ?"
+  },
+  { 
+    name: "Paris 2e", 
+    slug: "reparation-volet-paris-2", 
+    image: "/images/zones/paris-2.webp", 
+    zipCode: "75002",
+    lat: 48.8677,
+    lng: 2.3412,
+    description: "Passages couverts et Bourse — intervention rapide sur volets anciens et motorisation de stores.",
+    highlight: "Bourse & Passages",
+    searchKeywords: "volet roulant paris 2ème, dépannage volet bourse, réparation volet grands boulevards",
+    voiceSearch: "Comment faire réparer un volet roulant dans le 2ème arrondissement près de la Bourse ?"
+  },
+  { 
+    name: "Paris 3e", 
+    slug: "reparation-volet-paris-3", 
+    image: "/images/zones/paris-3.webp",
+    zipCode: "75003", 
+    lat: 48.8629,
+    lng: 2.3601,
+    description: "Haut Marais — réparation de volets sur façades historiques et résidences de caractère.",
+    highlight: "Haut Marais",
+    searchKeywords: "volet roulant paris 3ème, dépannage volet marais, réparation volet arts et métiers",
+    voiceSearch: "Qui peut réparer un volet roulant dans le Marais du 3ème arrondissement ?"
+  },
+  { 
+    name: "Paris 4e", 
+    slug: "reparation-volet-paris-4", 
+    image: "/images/zones/paris-4.webp", 
+    zipCode: "75004",
+    lat: 48.8543,
+    lng: 2.3576,
+    description: "Île de la Cité et Marais — spécialiste volets roulants en copropriétés haussmanniennes.",
+    highlight: "Île de la Cité",
+    searchKeywords: "volet roulant paris 4ème, dépannage volet notre dame, réparation volet île saint louis",
+    voiceSearch: "Dépannage volet roulant près de Notre-Dame dans le 4ème arrondissement ?"
+  },
+  { 
+    name: "Paris 5e", 
+    slug: "reparation-volet-paris-5", 
+    image: "/images/zones/paris-5.webp", 
+    zipCode: "75005",
+    lat: 48.8445,
+    lng: 2.3490,
+    description: "Quartier Latin et Panthéon — dépannage urgent de volets bloqués pour étudiants et résidents.",
+    highlight: "Quartier Latin",
+    searchKeywords: "volet roulant paris 5ème, dépannage volet panthéon, réparation volet quartier latin sorbonne",
+    voiceSearch: "Réparation de volet roulant pas cher pour étudiant dans le 5ème arrondissement ?"
+  },
+  { 
+    name: "Paris 6e", 
+    slug: "reparation-volet-paris-6", 
+    image: "/images/zones/paris-6.webp", 
+    zipCode: "75006",
+    lat: 48.8491,
+    lng: 2.3329,
+    description: "Saint-Germain-des-Prés — installation et remplacement de volets sur immeubles bourgeois.",
+    highlight: "Saint-Germain",
+    searchKeywords: "volet roulant paris 6ème, dépannage volet saint germain des prés, réparation volet luxembourg",
+    voiceSearch: "Expert volet roulant haut de gamme Saint-Germain-des-Prés 6ème arrondissement ?"
+  },
+  { 
+    name: "Paris 7e", 
+    slug: "reparation-volet-paris-7", 
+    image: "/images/zones/paris-7.webp", 
+    zipCode: "75007",
+    lat: 48.8561,
+    lng: 2.3126,
+    description: "Tour Eiffel et Invalides — motorisation et réparation de volets dans le quartier diplomatique.",
+    highlight: "Tour Eiffel",
+    searchKeywords: "volet roulant paris 7ème, dépannage volet tour eiffel, réparation volet invalides",
+    voiceSearch: "Dépannage volet roulant sécurisé près de la Tour Eiffel dans le 7ème ?"
+  },
+  { 
+    name: "Paris 8e", 
+    slug: "reparation-volet-paris-8", 
+    image: "/images/zones/paris-8.webp", 
+    zipCode: "75008",
+    lat: 48.8725,
+    lng: 2.3126,
+    description: "Champs-Élysées et Madeleine — intervention volets roulants pour boutiques et résidences de luxe.",
+    highlight: "Champs-Élysées",
+    searchKeywords: "volet roulant paris 8ème, dépannage volet champs elysées, réparation volet madeleine",
+    voiceSearch: "Réparateur volet roulant de luxe sur les Champs-Élysées dans le 8ème ?"
+  },
+  { 
+    name: "Paris 9e", 
+    slug: "reparation-volet-paris-9", 
+    image: "/images/zones/paris-9.webp", 
+    zipCode: "75009",
+    lat: 48.8760,
+    lng: 2.3375,
+    description: "Opéra Garnier et Grands Boulevards — dépannage de volets sur immeubles de spectacle et habitations.",
+    highlight: "Opéra",
+    searchKeywords: "volet roulant paris 9ème, dépannage volet opéra, réparation volet pigalle grands boulevards",
+    voiceSearch: "Dépanneur volet roulant rapide près de l'Opéra dans le 9ème arrondissement ?"
+  },
+  { 
+    name: "Paris 10e", 
+    slug: "reparation-volet-paris-10", 
+    image: "/images/zones/paris-10.webp", 
+    zipCode: "75010",
+    lat: 48.8761,
+    lng: 2.3601,
+    description: "Canal Saint-Martin et gares — réparation express de volets pour riverains et locaux commerciaux.",
+    highlight: "Canal St-Martin",
+    searchKeywords: "volet roulant paris 10ème, dépannage volet canal saint martin, réparation volet gare du nord est",
+    voiceSearch: "Réparation volet roulant urgent près du Canal Saint-Martin dans le 10ème ?"
+  },
+  { 
+    name: "Paris 11e", 
+    slug: "reparation-volet-paris-11", 
+    image: "/images/zones/paris-11.webp", 
+    zipCode: "75011",
+    lat: 48.8594,
+    lng: 2.3787,
+    description: "Bastille et Oberkampf — installation de volets sécurisés pour appartements et restaurants.",
+    highlight: "Bastille",
+    searchKeywords: "volet roulant paris 11ème, dépannage volet bastille, réparation volet oberkampf république",
+    voiceSearch: "Installateur volet roulant sécurisé à Bastille dans le 11ème arrondissement ?"
+  },
+  { 
+    name: "Paris 12e", 
+    slug: "reparation-volet-paris-12", 
+    image: "/images/zones/paris-12.webp", 
+    zipCode: "75012",
+    lat: 48.8393,
+    lng: 2.3959,
+    description: "Bercy et Bois de Vincennes — remplacement de volets vieillissants et pose de motorisation Somfy.",
+    highlight: "Bercy Village",
+    searchKeywords: "volet roulant paris 12ème, dépannage volet bercy, réparation volet gare de lyon",
+    voiceSearch: "Motorisation volet roulant Somfy à Bercy dans le 12ème arrondissement ?"
+  },
+  { 
+    name: "Paris 13e", 
+    slug: "reparation-volet-paris-13", 
+    image: "/images/zones/paris-13.webp", 
+    zipCode: "75013",
+    lat: 48.8283,
+    lng: 2.3622,
+    description: "Bibliothèque et Chinatown — dépannage volets dans les résidences modernes et tours d'habitation.",
+    highlight: "BnF & Tolbiac",
+    searchKeywords: "volet roulant paris 13ème, dépannage volet bibliothèque nationale, réparation volet tolbiac",
+    voiceSearch: "Réparation volet roulant dans les tours du 13ème arrondissement à Tolbiac ?"
+  },
+  { 
+    name: "Paris 14e", 
+    slug: "reparation-volet-paris-14", 
+    image: "/images/zones/paris-14.webp", 
+    zipCode: "75014",
+    lat: 48.8296,
+    lng: 2.3237,
+    description: "Montparnasse et Alésia — réparation de volets anciens et modernisation énergétique.",
+    highlight: "Montparnasse",
+    searchKeywords: "volet roulant paris 14ème, dépannage volet montparnasse, réparation volet alésia",
+    voiceSearch: "Rénovation volet roulant éco-responsable à Montparnasse dans le 14ème ?"
+  },
+  { 
+    name: "Paris 15e", 
+    slug: "reparation-volet-paris-15", 
+    image: "/images/zones/paris-15.webp", 
+    zipCode: "75015",
+    lat: 48.8412,
+    lng: 2.2999,
+    description: "Plus grand arrondissement — intervention massive sur copropriétés et pavillons résidentiels.",
+    highlight: "Convention",
+    searchKeywords: "volet roulant paris 15ème, dépannage volet tour eiffel, réparation volet beaugrenelle",
+    voiceSearch: "Dépannage volet roulant dans le 15ème arrondissement le plus grand de Paris ?"
+  },
+  { 
+    name: "Paris 16e", 
+    slug: "reparation-volet-paris-16", 
+    image: "/images/zones/paris-16.webp", 
+    zipCode: "75016",
+    lat: 48.8604,
+    lng: 2.2740,
+    description: "Trocadéro et Auteuil — volets roulants haut de gamme et motorisation domotique connectée.",
+    highlight: "Trocadéro",
+    searchKeywords: "volet roulant paris 16ème, dépannage volet trocadéro, réparation volet auteuil passy",
+    voiceSearch: "Spécialiste volet roulant haut de gamme au Trocadéro dans le 16ème ?"
+  },
+  { 
+    name: "Paris 17e", 
+    slug: "reparation-volet-paris-17", 
+    image: "/images/zones/paris-17.webp", 
+    zipCode: "75017",
+    lat: 48.8835,
+    lng: 2.3067,
+    description: "Batignolles et Ternes — remplacement de sangles cassées et remise en service de tabliers bloqués.",
+    highlight: "Batignolles",
+    searchKeywords: "volet roulant paris 17ème, dépannage volet batignolles, réparation volet ternes",
+    voiceSearch: "Réparation sangle volet roulant aux Batignolles dans le 17ème arrondissement ?"
+  },
+  { 
+    name: "Paris 18e", 
+    slug: "reparation-volet-paris-18", 
+    image: "/images/zones/paris-18.webp", 
+    zipCode: "75018",
+    lat: 48.8925,
+    lng: 2.3444,
+    description: "Montmartre et Sacré-Cœur — dépannage de volets sur façades en pente et immeubles atypiques.",
+    highlight: "Montmartre",
+    searchKeywords: "volet roulant paris 18ème, dépannage volet montmartre, réparation volet sacré coeur",
+    voiceSearch: "Dépannage volet roulant difficile d'accès à Montmartre dans le 18ème ?"
+  },
+  { 
+    name: "Paris 19e", 
+    slug: "reparation-volet-paris-19", 
+    image: "/images/zones/paris-19.webp", 
+    zipCode: "75019",
+    lat: 48.8827,
+    lng: 2.3821,
+    description: "Buttes-Chaumont et Villette — installation de volets isolants pour économies d'énergie.",
+    highlight: "Buttes-Chaumont",
+    searchKeywords: "volet roulant paris 19ème, dépannage volet buttes chaumont, réparation volet villette",
+    voiceSearch: "Volet roulant isolant économie d'énergie Buttes-Chaumont dans le 19ème ?"
+  },
+  { 
+    name: "Paris 20e", 
+    slug: "reparation-volet-paris-20", 
+    image: "/images/zones/paris-20.webp", 
+    zipCode: "75020",
+    lat: 48.8631,
+    lng: 2.4008,
+    description: "Belleville et Ménilmontant — réparation de volets en urgence et pose de modèles anti-effraction.",
+    highlight: "Belleville",
+    searchKeywords: "volet roulant paris 20ème, dépannage volet belleville, réparation volet ménilmontant",
+    voiceSearch: "Volet roulant anti-effraction à Belleville dans le 20ème arrondissement ?"
+  },
 ];
 
+// Enhanced CitySlide with GPS coordinates and more data
 const CitySlide = ({ city }: { city: ArrondissementCard }) => (
   <div className="min-w-0 shrink-0 grow-0 basis-full sm:basis-1/2 lg:basis-1/4 pl-4">
     <Link to={`/zones-intervention/${city.slug}`} className="group flex flex-col h-full">
@@ -79,17 +309,48 @@ const CitySlide = ({ city }: { city: ArrondissementCard }) => (
           loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+        
+        {/* GPS coordinates badge */}
+        <div className="absolute top-3 right-3 flex gap-1">
+          <div className="px-2 py-1 bg-black/70 backdrop-blur-sm text-white text-[10px] font-medium rounded-full flex items-center gap-1">
+            <Navigation className="h-2.5 w-2.5" />
+            GPS
+          </div>
+          {city.zipCode && (
+            <div className="px-2 py-1 bg-primary/90 backdrop-blur-sm text-white text-[10px] font-bold rounded-full">
+              {city.zipCode}
+            </div>
+          )}
+        </div>
+        
         <h3 className="absolute bottom-4 left-4 right-4 text-lg font-bold text-white drop-shadow-lg">
           {city.name}
         </h3>
       </div>
+      
       <div className="flex-1 p-5 rounded-b-2xl border border-t-0 bg-card transition-all duration-500 card-shadow group-hover:card-shadow-hover">
         <p className="text-sm text-muted-foreground leading-relaxed mb-3">
           {city.description}
         </p>
-        <div className="text-[10px] text-muted-foreground font-medium mb-4">
-          <span className="px-2 py-1 rounded-md bg-accent/5 border border-accent/10">{city.highlight}</span>
+        
+        {/* GPS Coordinates display */}
+        {city.lat && city.lng && (
+          <div className="text-[9px] text-muted-foreground/70 font-mono mb-2 flex items-center gap-1">
+            <MapPin className="h-2.5 w-2.5" />
+            {city.lat.toFixed(4)}°N, {city.lng.toFixed(4)}°E
+          </div>
+        )}
+        
+        <div className="flex items-center justify-between mb-4">
+          <div className="text-[10px] text-muted-foreground font-medium">
+            <span className="px-2 py-1 rounded-md bg-accent/5 border border-accent/10">{city.highlight}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+            <span className="text-[10px] font-semibold text-muted-foreground">4.9</span>
+          </div>
         </div>
+        
         <div className="mt-auto flex items-center gap-2 text-xs font-semibold text-accent transition-all duration-300 group-hover:gap-3">
           Voir les détails <ArrowRight className="h-3 w-3" />
         </div>
