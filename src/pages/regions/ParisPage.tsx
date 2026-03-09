@@ -454,11 +454,97 @@ const CarouselSection = ({
   );
 };
 
-const ParisPage = () => {
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
   const { phoneNumber } = usePhoneCall();
+
+  // JSON-LD structured data for Local Business and FAQ
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "LocalBusiness",
+        "@id": "https://reparaction-volets.fr/zones-intervention/paris#business",
+        "name": "Répar'Action Volets Paris",
+        "description": "Expert en dépannage et réparation de volets roulants dans tous les arrondissements de Paris. Intervention rapide, diagnostic gratuit et garantie 3 ans.",
+        "url": "https://reparaction-volets.fr/zones-intervention/paris",
+        "telephone": phoneNumber.replace(/\s/g, ''),
+        "priceRange": "€€",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "FR",
+          "addressRegion": "Île-de-France",
+          "addressLocality": "Paris"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 48.8566,
+          "longitude": 2.3522
+        },
+        "areaServed": arrondissements.map(arr => ({
+          "@type": "City",
+          "name": arr.name,
+          "addressLocality": arr.name,
+          "addressRegion": "Paris",
+          "geo": arr.lat && arr.lng ? {
+            "@type": "GeoCoordinates", 
+            "latitude": arr.lat,
+            "longitude": arr.lng
+          } : undefined
+        })),
+        "serviceType": ["Réparation volets roulants", "Installation volets", "Motorisation volets", "Dépannage express"],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Services Volets Roulants Paris",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service", 
+                "name": "Dépannage Volets Roulants Paris",
+                "description": "Intervention rapide sur volets bloqués ou cassés dans tous les arrondissements"
+              }
+            },
+            {
+              "@type": "Offer", 
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Installation Volets Roulants Paris",
+                "description": "Pose de volets neufs sur-mesure, solutions aluminium et PVC"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Motorisation Volets Paris", 
+                "description": "Modernisation volets manuels avec moteurs Somfy et domotique"
+              }
+            }
+          ]
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "bestRating": "5",
+          "ratingCount": "247"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://reparaction-volets.fr/zones-intervention/paris#faq",
+        "mainEntity": faqs.map(faq => ({
+          "@type": "Question",
+          "name": faq.question,
+          "acceptedAnswer": {
+            "@type": "Answer", 
+            "text": faq.answer
+          }
+        }))
+      }
+    ]
+  };
 
   useSEO({
     title: "Dépannage & Réparation Volets Roulants Paris | Tous Arrondissements | Répar'Action",
