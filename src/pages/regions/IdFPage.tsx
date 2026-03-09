@@ -325,11 +325,70 @@ const IdFPage = () => {
     { question: "Couvrez-vous tous les départements de l'Île-de-France ?", answer: "Oui, nous couvrons les 7 départements : Seine-et-Marne (77), Yvelines (78), Essonne (91), Hauts-de-Seine (92), Seine-Saint-Denis (93), Val-de-Marne (94) et Val-d'Oise (95). Plus de 50 villes desservies." },
     { question: "Intervenez-vous en résidence et en copropriété ?", answer: "Oui, nous intervenons aussi bien chez les particuliers que dans les copropriétés et les résidences. Nous pouvons fournir des devis conformes aux exigences des syndics et des bailleurs sociaux." },
     { question: "Quelles marques de volets roulants réparez-vous en IdF ?", answer: "Nos techniciens sont experts sur toutes les marques : Somfy, Bubendorff, Profalux, Franciaflex, Simu, Nice, Becker, Came, Zurflüh-Feller. Nous disposons de pièces de rechange dans nos véhicules pour les réparations au premier passage." },
-    { question: "Proposez-vous des contrats de maintenance pour les copropriétés ?", answer: "Oui, nous proposons des contrats de maintenance préventive pour les copropriétés et les gestionnaires immobiliers. Entretien annuel de tous les volets, vérification des moteurs, lubrification des coulisses. Tarifs dégressifs selon le nombre de volets." }
+    { question: "Proposez-vous des contrats de maintenance pour les copropriétés ?", answer: "Oui, nous proposons des contrats de maintenance préventive pour les copropriétés et les gestionnaires immobiliers. Entretien annuel de tous les volets, vérification des moteurs, lubrification des coulisses. Tarifs dégressifs selon le nombre de volets." },
+    // Voice search optimized FAQs
+    { question: "Où trouver un réparateur de volets roulants en Île-de-France ?", answer: "Répar'Action Volets couvre toute l'Île-de-France avec plus de 50 villes desservies. Nos techniciens locaux interviennent dans les Hauts-de-Seine (92), Seine-Saint-Denis (93), Val-de-Marne (94), Yvelines (78), Essonne (91), Seine-et-Marne (77) et Val-d'Oise (95)." },
+    { question: "Comment motoriser un volet roulant manuel en banlieue parisienne ?", answer: "Nos techniciens motorisent vos volets manuels en 1 à 2h par volet, sans travaux de maçonnerie. Moteurs Somfy, Simu ou Bubendorff. Compatible smartphone via TaHoma, Google Home et Alexa. Devis gratuit en Île-de-France." },
+    { question: "Mon volet roulant fait du bruit en Île-de-France, que faire ?", answer: "Un volet bruyant nécessite souvent une lubrification des coulisses, un recalibrage du tablier ou un changement de lames abîmées. Nos techniciens diagnostiquent gratuitement la cause et interviennent rapidement dans toute l'Île-de-France." }
   ];
+
+  // JSON-LD structured data
+  const allVilles = departements.flatMap(d => d.villes);
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "LocalBusiness",
+        "@id": "https://reparaction-volets.fr/zones-intervention/ile-de-france#business",
+        "name": "Répar'Action Volets Île-de-France",
+        "description": "Expert en dépannage et réparation de volets roulants en Île-de-France. 7 départements couverts, plus de 50 villes.",
+        "url": "https://reparaction-volets.fr/zones-intervention/ile-de-france",
+        "telephone": phoneNumber.replace(/\s/g, ''),
+        "priceRange": "€€",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "FR",
+          "addressRegion": "Île-de-France"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 48.8566,
+          "longitude": 2.3522
+        },
+        "areaServed": allVilles.map(v => ({
+          "@type": "City",
+          "name": v.name,
+          "geo": v.lat && v.lng ? {
+            "@type": "GeoCoordinates",
+            "latitude": v.lat,
+            "longitude": v.lng
+          } : undefined
+        })),
+        "serviceType": ["Réparation volets roulants", "Installation volets", "Motorisation volets", "Dépannage express"],
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "bestRating": "5",
+          "ratingCount": "389"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://reparaction-volets.fr/zones-intervention/ile-de-france#faq",
+        "mainEntity": faqs.map(faq => ({
+          "@type": "Question",
+          "name": faq.question,
+          "acceptedAnswer": { "@type": "Answer", "text": faq.answer }
+        }))
+      }
+    ]
+  };
 
   return (
     <div className="min-h-screen bg-background">
+      {/* JSON-LD */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      
       <Navbar />
 
       {/* Hero */}
