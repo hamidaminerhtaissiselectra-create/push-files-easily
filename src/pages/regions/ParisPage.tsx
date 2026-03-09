@@ -597,6 +597,12 @@ const CarouselSection = ({
 
   return (
     <div className="min-h-screen bg-background">
+      {/* JSON-LD Structured Data */}
+      <script 
+        type="application/ld+json" 
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} 
+      />
+      
       <Navbar />
 
       {/* Hero Section */}
