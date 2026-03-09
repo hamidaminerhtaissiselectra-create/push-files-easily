@@ -12,9 +12,9 @@ const features = [
 ];
 
 const blogLinks = [
-  { label: "Guide d'entretien des volets roulants", slug: "entretien-volets-roulants" },
-  { label: "Réparation ou remplacement : que choisir ?", slug: "reparation-vs-remplacement" },
-  { label: "Pannes fréquentes et solutions", slug: "pannes-frequentes-volets-roulants" },
+  { label: "Guide d'entretien des volets roulants", slug: "entretien-volets" },
+  { label: "Somfy vs Bubendorff : comparatif complet", slug: "somfy-vs-bubendorff" },
+  { label: "Guide motorisation volets roulants", slug: "guide-motorisation" },
 ];
 
 const ImageTextSection = () => {
