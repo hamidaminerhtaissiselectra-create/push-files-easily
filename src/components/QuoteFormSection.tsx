@@ -105,7 +105,7 @@ const QuoteFormSection = () => {
             ⚡ Réponse en moins de 24h
           </span>
           <h2 id="quote-heading" className="font-display text-3xl md:text-4xl font-bold text-foreground mt-2 mb-4">
-            Comment pouvons-nous vous aider ?
+            Devis Gratuit — Réparation & Installation Volets Roulants
           </h2>
           <p className="text-muted-foreground text-lg">Choisissez votre type de demande et répondez à quelques questions.</p>
         </motion.div>
