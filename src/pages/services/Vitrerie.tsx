@@ -7,14 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import imgVitrerie from "@/assets/service-vitrerie-v2.webp";
+const imgVitrerie = "/images/assets/service-vitrerie-v2.webp";
 import ProcessSection from "@/components/ProcessSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import QuoteFormSection from "@/components/QuoteFormSection";
 import RepairShowcaseSection from "@/components/RepairShowcaseSection";
 import LocalZonesGrid from "@/components/LocalZonesGrid";
 import FAQSection from "@/components/FAQSection";
-import glazierTechnicianImg from "@/assets/paris-notre-dame-vitrerie.webp";
+const glazierTechnicianImg = "/images/assets/paris-notre-dame-vitrerie.webp";
 import { fadeUp, staggerItem, hoverLift, heroEntry } from "@/lib/animations";
 
 const typesVitrage = [

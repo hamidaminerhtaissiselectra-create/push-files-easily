@@ -36,7 +36,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import useEmblaCarousel from "embla-carousel-react";
-import ileDeFranceImg from "@/assets/regions/ile-de-france.webp";
+const ileDeFranceImg = "/images/assets/regions/ile-de-france.webp";
 import { usePhoneCall } from "@/hooks/usePhoneCall";
 
 interface VilleCard {
