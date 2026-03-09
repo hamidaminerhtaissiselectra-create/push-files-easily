@@ -405,7 +405,11 @@
       "description": "Réparation, installation et motorisation de volets roulants à Paris et en Île-de-France. Artisan certifié RGE, intervention sous 48h, garantie 3 ans.",
       "speakable": {
         "@type": "SpeakableSpecification",
-        "cssSelector": ["h1", ".hero-description", ".faq-answer"]
+        "xpath": [
+          "/html/body//h1",
+          "/html/body//section[@id='services']//h2",
+          "/html/body//section[@id='contact']//h2"
+        ]
       },
       "specialty": "Réparation de volets roulants"
     }
