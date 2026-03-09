@@ -66,7 +66,7 @@ const AboutUsPage = () => {
       "@type": "Organization",
       "name": "Répar'Action Volets",
       "url": "https://reparaction-volets.fr",
-      "logo": "https://reparaction-volets.fr/logo.png",
+      "logo": "https://reparaction-volets.fr/images/og-image.webp",
       "description": "Expert en dépannage, réparation, installation et motorisation de volets roulants depuis plus de 10 ans. Présent à Paris et dans toute la France.",
       "address": {
         "@type": "PostalAddress",

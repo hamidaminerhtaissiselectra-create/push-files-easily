@@ -55,7 +55,7 @@ const InstallationRemplacementPage = () => {
       <Navbar />
       <section ref={heroRef} className="relative pt-24 pb-16 min-h-[60vh] flex items-center overflow-hidden">
         <motion.div className="absolute inset-0" style={{ y: bgY }}>
-          <img src={imgInstallation} alt="Installation de volets roulants" className="w-full h-[120%] object-cover" />
+          <img src={imgInstallation} alt="Installation de volets roulants" className="w-full h-[120%] object-cover" fetchPriority="high" loading="eager" />
           <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/40" />
         </motion.div>
         <div className="container mx-auto px-4 relative z-10">

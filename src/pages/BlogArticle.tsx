@@ -9,6 +9,19 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { blogArticles } from "@/data/blogArticles";
 
+const FRENCH_MONTHS: Record<string, string> = {
+  "janvier": "01", "février": "02", "mars": "03", "avril": "04",
+  "mai": "05", "juin": "06", "juillet": "07", "août": "08",
+  "septembre": "09", "octobre": "10", "novembre": "11", "décembre": "12",
+};
+
+const parseFrenchDate = (dateStr: string): string => {
+  const parts = dateStr.toLowerCase().match(/(\d+)\s+(\w+)\s+(\d{4})/);
+  if (!parts) return "2026-02-22";
+  const month = FRENCH_MONTHS[parts[2]] || "01";
+  return `${parts[3]}-${month}-${parts[1].padStart(2, "0")}`;
+};
+
 const BlogArticlePage = () => {
   const { slug } = useParams<{ slug: string }>();
   const article = blogArticles.find((a) => a.slug === slug);
@@ -46,8 +59,8 @@ const BlogArticlePage = () => {
           url: "https://reparaction-volets.fr",
           logo: { "@type": "ImageObject", url: "https://reparaction-volets.fr/images/og-image.webp" }
         },
-        datePublished: "2026-02-22",
-        dateModified: "2026-03-06",
+        datePublished: article.date ? parseFrenchDate(article.date) : "2026-02-22",
+        dateModified: new Date().toISOString().split('T')[0],
         mainEntityOfPage: { "@type": "WebPage", "@id": `https://reparaction-volets.fr/blog/${article.slug}` },
         inLanguage: "fr-FR",
         keywords: `${article.category}, volet roulant`,
@@ -72,7 +85,10 @@ const BlogArticlePage = () => {
 
   if (!article) return <Navigate to="/blog" replace />;
 
-  const relatedArticles = blogArticles.filter((a) => a.slug !== slug).slice(0, 3);
+  const relatedArticles = [
+    ...blogArticles.filter((a) => a.slug !== slug && a.category === article.category),
+    ...blogArticles.filter((a) => a.slug !== slug && a.category !== article.category),
+  ].slice(0, 3);
 
   // Simple markdown-to-JSX renderer
   const renderContent = (content: string) => {
