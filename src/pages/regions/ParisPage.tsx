@@ -38,7 +38,6 @@ import {
 import useEmblaCarousel from "embla-carousel-react";
 import ileDeFranceImg from "@/assets/regions/ile-de-france.webp";
 import { usePhoneCall } from "@/hooks/usePhoneCall";
-import { citiesLocationData } from "@/data/villes-geolocalisation";
 
 interface ArrondissementCard {
   name: string;
