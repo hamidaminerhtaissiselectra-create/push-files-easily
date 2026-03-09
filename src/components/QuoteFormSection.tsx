@@ -115,7 +115,7 @@ const QuoteFormSection = () => {
           <div id="devis" className="scroll-mt-20" />
           <div className="h-1.5 rounded-t-2xl" style={{ background: "linear-gradient(to right, hsl(var(--service-blue)), hsl(var(--accent)), hsl(var(--service-orange)))" }} />
 
-          <div className="bg-card rounded-b-2xl shadow-2xl border border-border/50 overflow-hidden">
+          <form className="bg-card rounded-b-2xl shadow-2xl border border-border/50 overflow-hidden" onSubmit={(e) => { e.preventDefault(); if (step === 3 && canNext()) handleSubmit(); }}>
             {/* Mode tabs */}
             <div className="flex justify-center gap-3 pt-8 pb-4 px-6">
               <motion.button
