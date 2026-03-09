@@ -17,7 +17,7 @@ const ContactSection = React.forwardRef<HTMLElement>((_, ref) => (
         <motion.div {...fadeLeft} className="rounded-2xl overflow-hidden border border-border h-96 shadow-lg relative">
           <iframe
             title="Localisation Répar'Action Volets — 62 Rue Emile Zola, 77610 Fontenay-Trésigny"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2632.5!2d2.8755!3d48.7053!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e61b5e5b5b5b5b%3A0x0!2s62+Rue+Emile+Zola%2C+77610+Fontenay-Tr%C3%A9signy!5e0!3m2!1sfr!2sfr!4v1"
+            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=62+Rue+Emile+Zola,+77610+Fontenay-Trésigny,+France&zoom=15"
             width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
           <noscript>
             <p className="absolute inset-0 flex items-center justify-center bg-muted text-muted-foreground text-sm p-4 text-center">

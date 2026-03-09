@@ -41,7 +41,7 @@ const CookieConsent = () => {
                   <Button onClick={acceptCookies} className="bg-accent text-white hover:bg-accent/90 flex-1">
                     Accepter
                   </Button>
-                  <Button variant="outline" onClick={() => setIsVisible(false)} className="flex-1">
+                  <Button variant="outline" onClick={() => { localStorage.setItem("cookie-consent", "refused"); setIsVisible(false); }} className="flex-1">
                     Refuser
                   </Button>
                 </div>
