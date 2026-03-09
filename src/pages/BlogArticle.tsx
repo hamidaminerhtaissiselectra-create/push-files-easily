@@ -35,13 +35,22 @@ const BlogArticlePage = () => {
 
       const articleSchema = {
         "@context": "https://schema.org",
-        "@type": "Article",
+        "@type": "BlogPosting",
         headline: article.title,
         description: article.metaDescription,
-        author: { "@type": "Organization", name: "Répar'Action Volets" },
-        publisher: { "@type": "Organization", name: "Répar'Action Volets", url: "https://reparaction-volets.fr" },
+        image: article.image ? `https://reparaction-volets.fr${article.image}` : undefined,
+        author: { "@type": "Organization", name: "Répar'Action Volets", url: "https://reparaction-volets.fr" },
+        publisher: { 
+          "@type": "Organization", 
+          name: "Répar'Action Volets", 
+          url: "https://reparaction-volets.fr",
+          logo: { "@type": "ImageObject", url: "https://reparaction-volets.fr/images/og-image.webp" }
+        },
         datePublished: "2026-02-22",
-        mainEntityOfPage: `https://reparaction-volets.fr/blog/${article.slug}`,
+        dateModified: "2026-03-06",
+        mainEntityOfPage: { "@type": "WebPage", "@id": `https://reparaction-volets.fr/blog/${article.slug}` },
+        inLanguage: "fr-FR",
+        keywords: `${article.category}, volet roulant`,
       };
 
       const s1 = document.createElement("script");
