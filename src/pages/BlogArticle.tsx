@@ -60,7 +60,7 @@ const BlogArticlePage = () => {
           logo: { "@type": "ImageObject", url: "https://reparaction-volets.fr/images/og-image.webp" }
         },
         datePublished: article.date ? parseFrenchDate(article.date) : "2026-02-22",
-        dateModified: new Date().toISOString().split('T')[0],
+        dateModified: article.date ? parseFrenchDate(article.date) : "2026-02-22",
         mainEntityOfPage: { "@type": "WebPage", "@id": `https://reparaction-volets.fr/blog/${article.slug}` },
         inLanguage: "fr-FR",
         keywords: `${article.category}, volet roulant`,
