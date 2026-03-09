@@ -130,7 +130,7 @@ const InstallationRemplacementPage = () => {
                 className={`group bg-card rounded-2xl border ${t.color} overflow-hidden card-shadow hover:card-shadow-hover transition-all duration-500 flex flex-col`}
               >
                 <div className="relative h-56 overflow-hidden">
-                  <img src={t.image} alt={t.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <img src={t.image} alt={t.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <Badge className={`absolute top-4 right-4 text-xs font-bold border ${t.badgeColor} shadow-md backdrop-blur-sm`}>{t.badge}</Badge>
                 </div>

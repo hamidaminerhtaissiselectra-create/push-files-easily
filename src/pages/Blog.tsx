@@ -125,7 +125,7 @@ const BlogPage = () => {
             <div className="grid md:grid-cols-2">
               {featuredArticle.image && (
                 <div className="h-64 md:h-full overflow-hidden relative">
-                  <img src={featuredArticle.image} alt={featuredArticle.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <img src={featuredArticle.image} alt={featuredArticle.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 to-transparent" />
                   <div className={`absolute top-4 left-4 w-12 h-12 rounded-xl bg-accent flex items-center justify-center shadow-lg`}>
                     <featuredStyle.icon className="h-6 w-6 text-accent-foreground" strokeWidth={2} />
