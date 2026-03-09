@@ -40,7 +40,7 @@ const ZoneCityPage = ({ city }: ZoneCityPageProps) => {
     "areaServed": { "@type": "City", "name": city.name },
     "telephone": "+33603205967",
     "priceRange": "€€",
-    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": String(city.testimonials.length * 47) },
+    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": String(city.testimonials.length) },
   };
 
   // FAQPage schema generated after faqs are defined - moved to render

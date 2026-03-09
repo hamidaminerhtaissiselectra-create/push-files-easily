@@ -294,7 +294,7 @@ const QuoteFormSection = () => {
                 )}
               </div>
             </div>
-          </div>
+          </form>
         </motion.div>
       </div>
     </section>
