@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { MapPin, ChevronRight, ArrowRight, Phone, CheckCircle2, Shield, Star, Clock, Award, Users, Wrench, Home } from "lucide-react";
+import { MapPin, ChevronRight, ArrowRight, Phone, CheckCircle2, Shield, Star, Clock, Award, Users, Wrench, Home, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
