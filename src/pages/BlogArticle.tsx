@@ -72,7 +72,10 @@ const BlogArticlePage = () => {
 
   if (!article) return <Navigate to="/blog" replace />;
 
-  const relatedArticles = blogArticles.filter((a) => a.slug !== slug).slice(0, 3);
+  const relatedArticles = [
+    ...blogArticles.filter((a) => a.slug !== slug && a.category === article.category),
+    ...blogArticles.filter((a) => a.slug !== slug && a.category !== article.category),
+  ].slice(0, 3);
 
   // Simple markdown-to-JSX renderer
   const renderContent = (content: string) => {
