@@ -55,7 +55,7 @@ const ServicesSection = () => (
           <Shield className="h-3.5 w-3.5" /> Solutions Complètes
         </span>
         <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mt-2 mb-4">
-          Dépannage, Réparation, Installation & Motorisation de Volets Roulants
+          Nos 5 Services Spécialisés pour Vos Volets Roulants
         </h2>
         <p className="text-muted-foreground mb-3">
           Dépannage express, réparation, installation et motorisation de volets roulants. Expertise multimarques (Somfy, Bubendorff, Profalux, Simu, Nice), intervention rapide, garantie 3 ans pièces et main d'œuvre. Paris & Île-de-France.
