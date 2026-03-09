@@ -32,19 +32,32 @@ const ContactSection = React.forwardRef<HTMLElement>((_, ref) => (
             { icon: Mail, title: "Email", text: "contact@reparaction-volets.fr", sub: "Réponse sous 24h", color: "bg-service-rose", href: "mailto:contact@reparaction-volets.fr" },
             { icon: MapPin, title: "Adresse", text: "62 Rue Emile Zola, 77610 Fontenay-Trésigny", sub: "Siège social", color: "bg-service-emerald", href: "https://maps.google.com/?q=62+Rue+Emile+Zola+77610+Fontenay-Trésigny" },
             { icon: Clock, title: "Horaires", text: "Lun - Ven : 8h00 - 18h00 | Sam : 9h00 - 13h00", sub: "Urgences 7j/7", color: "bg-service-violet", href: undefined },
-          ].map((item, index) => (
-            <motion.div key={item.title} {...staggerItem(index)}
-              className="flex items-start gap-4 bg-card rounded-2xl p-6 card-shadow border border-border hover:card-shadow-hover transition-all duration-300">
-              <div className={`w-14 h-14 rounded-xl flex items-center justify-center shrink-0 shadow-lg border border-white/20 ${item.color} text-white`}>
-                <item.icon className="h-6 w-6" />
-              </div>
-              <div className="flex-1">
-                <div className="font-display font-bold text-foreground text-base mb-1">{item.title}</div>
-                <div className="text-foreground font-semibold text-sm mb-1">{item.text}</div>
-                <div className="text-xs text-muted-foreground font-medium">{item.sub}</div>
-              </div>
-            </motion.div>
-          ))}
+          ].map((item, index) => {
+            const content = (
+              <>
+                <div className={`w-14 h-14 rounded-xl flex items-center justify-center shrink-0 shadow-lg border border-white/20 ${item.color} text-white`}>
+                  <item.icon className="h-6 w-6" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-display font-bold text-foreground text-base mb-1">{item.title}</div>
+                  <div className="text-foreground font-semibold text-sm mb-1">{item.text}</div>
+                  <div className="text-xs text-muted-foreground font-medium">{item.sub}</div>
+                </div>
+              </>
+            );
+            return (
+              <motion.div key={item.title} {...staggerItem(index)}
+                className="bg-card rounded-2xl p-6 card-shadow border border-border hover:card-shadow-hover transition-all duration-300">
+                {item.href ? (
+                  <a href={item.href} target={item.href.startsWith("https") ? "_blank" : undefined} rel={item.href.startsWith("https") ? "noopener noreferrer" : undefined} className="flex items-start gap-4" aria-label={`${item.title} : ${item.text}`}>
+                    {content}
+                  </a>
+                ) : (
+                  <div className="flex items-start gap-4">{content}</div>
+                )}
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
     </div>
