@@ -595,19 +595,6 @@ const ParisPage = () => {
     { icon: Truck, title: "Dépannage Express", description: "Service d'urgence disponible à Paris pour les pannes critiques. Intervention sous 24h garantie.", link: "/services/depannage-express" }
   ];
 
-  // Enhanced FAQs with voice search optimization
-  const faqs = [
-    { question: "Quel est le délai d'intervention pour un volet bloqué à Paris ?", answer: "Nous intervenons en urgence sous 24h à 48h pour tous les dépannages à Paris. Pour les volets bloqués en position ouverte représentant un risque de sécurité, nous traitons la demande en priorité et intervenons souvent le jour même. Appelez le 06 03 20 59 67." },
-    { question: "Combien coûte la réparation d'un volet roulant à Paris ?", answer: "Le coût dépend de la panne : remplacement de sangle (60-120€), changement de moteur Somfy/Bubendorff (180-350€), remplacement de lames (80-200€). Diagnostic gratuit et devis détaillé avant toute intervention. Pas de frais de déplacement à Paris." },
-    { question: "Intervenez-vous dans tous les arrondissements de Paris ?", answer: "Oui, nous couvrons les 20 arrondissements de Paris sans exception. Nos techniciens connaissent les spécificités de chaque quartier : immeubles haussmanniens du 7e et 16e, ateliers du Marais, résidences modernes du 13e et 15e." },
-    { question: "Travaillez-vous sur les volets des immeubles haussmanniens ?", answer: "Oui, c'est notre spécialité à Paris. Les volets d'immeubles haussmanniens ont des contraintes spécifiques (coffres intégrés, hauteurs atypiques). Nos techniciens sont formés pour intervenir sans dégrader les éléments architecturaux protégés." },
-    { question: "Proposez-vous la motorisation pour les volets manuels parisiens ?", answer: "Absolument. Nous motorisons vos volets manuels existants sans travaux de maçonnerie ni modification de façade. Installation de moteurs Somfy (filaires, radio ou connectés) en 1 à 2 heures par volet. Compatible Google Home, Alexa, Apple HomeKit." },
-    { question: "Êtes-vous certifié RGE pour bénéficier de MaPrimeRénov' ?", answer: "Oui, Répar'Action Volets est certifié RGE et Qualibat. Cette certification vous permet de bénéficier de MaPrimeRénov', de l'éco-PTZ et du crédit d'impôt pour l'installation de volets isolants ou de double vitrage à Paris." },
-    // Voice search optimized FAQs
-    { question: "Comment trouver un bon réparateur de volets roulants à Paris ?", answer: "Pour trouver le meilleur réparateur à Paris, vérifiez : la certification RGE, les avis clients (nous avons 4.9/5), la garantie offerte (3 ans chez nous), et la couverture géographique. Répar'Action intervient dans les 20 arrondissements avec des techniciens spécialisés." },
-    { question: "Que faire quand mon volet roulant est bloqué à Paris ?", answer: "Si votre volet est bloqué à Paris : 1) Ne forcez pas le mécanisme, 2) Vérifiez l'alimentation électrique, 3) Contactez-nous au 06 03 20 59 67 pour un diagnostic gratuit. Nous intervenons en urgence dans tous les arrondissements, souvent le jour même." },
-    { question: "Quel est le prix d'un volet roulant neuf à Paris ?", answer: "Prix volet roulant neuf à Paris : manuel 300-600€, électrique 500-900€, sur-mesure 600-1200€. Installation comprise. Devis gratuit, financement possible, éligible aux aides MaPrimeRénov'. Garantie 3 ans pièces et main d'œuvre." }
-  ];
 
   return (
     <div className="min-h-screen bg-background">
